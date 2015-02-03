@@ -1,9 +1,19 @@
 from PIL import Image, ImageFilter
 import random, sys
 
-sys.setrecursionlimit(10000)
+# Settings
 
-# img = img.filter(ImageFilter.FIND_EDGES)
+sys.setrecursionlimit(10000)
+threshold = 50 # Threshold for edge detection. Between 0 and 255*3
+randomness = 50 # What % of intervals are NOT sorted
+
+print "Threshold:", threshold
+print "Randomness:", randomness
+
+inputImage = 'image.jpg'
+outputImage = str(sys.argv[1])+".png"
+
+# End settings
 
 blackPixel = (0, 0, 0, 255)
 whitePixel = (255, 255, 255, 255)
@@ -20,12 +30,12 @@ def quick_sort(pixels):
 		return lesser + [pivot] + greater
 
 
-def sort_all_pixels(image,output):
+def sort_all_pixels():
 	#sorts every line of pixels
 	print("Sorting all pixels.")
 
 	print("Opening image...")
-	img = Image.open(image)
+	img = Image.open(inputImage)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	img = img.convert('RGBA')
 	edges = edges.convert('RGBA')
@@ -54,7 +64,7 @@ def sort_all_pixels(image,output):
 	for y in range(img.size[1]):
 		edgePixels.append([])
 		for x in range(img.size[0]):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < 200:
+			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
 				edgePixels[y].append(whitePixel)
 			else:
 				edgePixels[y].append(blackPixel)
@@ -82,7 +92,7 @@ def sort_all_pixels(image,output):
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>32:
+			if random.randint(0,100)>=randomness:
 				row=row+quick_sort(interval)
 			else:
 				row=row+interval
@@ -97,9 +107,6 @@ def sort_all_pixels(image,output):
 			new.putpixel((x, y), test[y][x]) #apply the pixels to the new image
 
 	print("Saving image...")
-	new.save(output)
+	new.save(outputImage)
 
-inFile = sys.argv[1]
-outFile = sys.argv[2]
-
-sort_all_pixels(inFile,outFile)
+sort_all_pixels()
