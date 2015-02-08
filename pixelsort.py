@@ -30,14 +30,93 @@ def quickSort(pixels):
 
 
 def randomWidth():
+	# Defines the distribution of widths
 	x = random.random()
-	width = int(100*x**2*math.exp(-x*x))
+	# width = int(200*(1-(1-(x-1)**2)**0.5))
+	width = int(50*(1-x))
 	return(width)
 
-def selectiveSort():
-	#sorts every line of pixels
-	print("Sorting all pixels.")
+def selectiveSort(pixels,filterPixels):
+	sortedPixels = []
+	edgePixels = []
+	intervals = []
 
+	print("Thresholding...")
+	for y in range(len(pixels)):
+		edgePixels.append([])
+		for x in range(len(pixels[0])):
+			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
+				edgePixels[y].append(whitePixel)
+			else:
+				edgePixels[y].append(blackPixel)
+
+	print("Cleaning up edges...")
+	for y in range(len(pixels)-1,1,-1):
+		for x in range(len(pixels[0])-1,1,-1):
+			if edgePixels[y][x] == blackPixel and edgePixels[y][x-1] == blackPixel:
+				edgePixels[y][x] = whitePixel
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		for x in range(len(pixels[0])):
+			if edgePixels[y][x] == blackPixel:
+				intervals[y].append(x)
+		intervals[y].append(len(pixels[0]))
+
+	print("Sorting intervals...")
+	sortedPixels=[]
+	for y in range(len(pixels)):
+		row=[]
+		xMin = 0
+		for xMax in intervals[y]:
+			interval = []
+			for x in range(xMin, xMax):
+				interval.append(pixels[y][x])
+			if random.randint(0,100)>=randomness:
+				row=row+quickSort(interval)
+			else:
+				row=row+interval
+			xMin = xMax
+		row.append(pixels[y][0]) # wat
+		sortedPixels.append(row)
+	return(sortedPixels)
+
+def randomSort(pixels):
+	sortedPixels = []
+	intervals = []
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		x = 0
+		while True:
+			width = randomWidth()
+			x += width
+			if x > len(pixels[0]):
+				intervals[y].append(len(pixels[0]))
+				break
+			else:
+				intervals[y].append(x)
+
+	print("Sorting intervals...")
+	for y in range(len(pixels)):
+		row=[]
+		xMin = 0
+		for xMax in intervals[y]:
+			interval = []
+			for x in range(xMin, xMax):
+				interval.append(pixels[y][x])
+			if random.randint(0,100)>=randomness:
+				row=row+quickSort(interval)
+			else:
+				row=row+interval
+			xMin = xMax
+		row.append(pixels[y][0]) # wat
+		sortedPixels.append(row)
+	return(sortedPixels)
+
+def pixelSort():
 	print("Opening image...")
 	img = Image.open(inputImage)
 	edges = img.filter(ImageFilter.FIND_EDGES)
@@ -47,13 +126,10 @@ def selectiveSort():
 	print("Get data...")
 	data = img.load()
 	edgeData = edges.load()
-
 	new = Image.new('RGBA', img.size)
 
 	pixels = []
-	sortedPixels = []
 	filterPixels = []
-	edgePixels = []
 	intervals = []
 	print("Getting pixels...")
 	#Load all of the pixels into the pixels list
@@ -64,46 +140,8 @@ def selectiveSort():
 			filterPixels[y].append(edgeData[x, y])
 			pixels[y].append(data[x, y])
 
-	print("Thresholding...")
-	for y in range(img.size[1]):
-		edgePixels.append([])
-		for x in range(img.size[0]):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
-				edgePixels[y].append(whitePixel)
-			else:
-				edgePixels[y].append(blackPixel)
-
-	print("Cleaning up edges...")
-	for y in range(img.size[1]-1,1,-1):
-		for x in range(img.size[0]-1,1,-1):
-			if edgePixels[y][x] == blackPixel and edgePixels[y][x-1] == blackPixel:
-				edgePixels[y][x] = whitePixel
-
-	print("Defining intervals...")
-	for y in range(img.size[1]):
-		intervals.append([])
-		for x in range(img.size[0]):
-			if edgePixels[y][x] == blackPixel:
-				intervals[y].append(x)
-		intervals[y].append(img.size[0])
-
-	print("Sorting intervals...")
-	sortedPixels=[]
-	for y in range(img.size[1]):
-		row=[]
-		xMin = 0
-		for xMax in intervals[y]:
-			interval = []
-			for x in range(xMin, xMax):
-				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
-				row=row+quickSort(interval)
-			else:
-				row=row+interval
-			xMin = xMax
-		row.append(pixels[y][0]) # wat
-		sortedPixels.append(row)
-
+	sortedPixels = randomSort(pixels)
+	# sortedPixels = selectiveSort(pixels, filterPixels)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
@@ -111,65 +149,7 @@ def selectiveSort():
 			new.putpixel((x, y), sortedPixels[y][x]) #apply the pixels to the new image
 
 	print("Saving image...")
-	new.save(outputImage)
-
-def randomSort():
-	print("Opening image...")
-	img = Image.open(inputImage)
-	img = img.convert('RGBA')
-
-	print("Get data...")
-	data = img.load()
-
-	new = Image.new('RGBA', img.size)
-
-	pixels = []
-	sortedPixels = []
-	intervals = []
-	print("Getting pixels...")
-	#Load all of the pixels into the pixels list
-	for y in range(img.size[1]):
-		pixels.append([])
-		for x in range(img.size[0]):
-			pixels[y].append(data[x, y])
-
-	print("Defining intervals...")
-	for y in range(img.size[1]):
-		intervals.append([])
-		x = 0
-		while True:
-			width = randomWidth()
-			x += width
-			if x > img.size[0]:
-				intervals[y].append(img.size[0])
-				break
-			else:
-				intervals[y].append(x)
-
-	print("Sorting intervals...")
-	sortedPixels=[]
-	for y in range(img.size[1]):
-		row=[]
-		xMin = 0
-		for xMax in intervals[y]:
-			interval = []
-			for x in range(xMin, xMax):
-				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
-				row=row+quickSort(interval)
-			else:
-				row=row+interval
-			xMin = xMax
-		row.append(pixels[y][0]) # wat
-		sortedPixels.append(row)
+	new.save(outputImage)	
 
 
-	print("Placing pixels...")
-	for y in range(img.size[1]):
-		for x in range(img.size[0]):
-			new.putpixel((x, y), sortedPixels[y][x]) #apply the pixels to the new image
-
-	print("Saving image...")
-	new.save(outputImage)
-
-selectiveSort()
+pixelSort()
