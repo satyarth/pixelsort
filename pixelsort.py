@@ -12,8 +12,9 @@ p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",d
 args = p.parse_args()
 
 randomness = int(args.randomness)
+threshold = int(args.threshold)
 print "Randomness =", randomness
-
+print "Threshold =", threshold
 
 sys.setrecursionlimit(10000)
 
@@ -32,7 +33,6 @@ def quickSort(pixels):
 		return(sorted(pixels, key = lambda x: x[0] + x[1] + x[2]))
 	else:
 		return(sorted(pixels))
-
 
 def randomWidth():
 	# Defines the distribution of widths
@@ -63,7 +63,7 @@ def selectiveSort(pixels):
 	for y in range(len(pixels)):
 		edgePixels.append([])
 		for x in range(len(pixels[0])):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < args.threshold:
+			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
 				edgePixels[y].append(whitePixel)
 			else:
 				edgePixels[y].append(blackPixel)
@@ -134,7 +134,8 @@ def randomSort(pixels):
 		sortedPixels.append(row)
 	return(sortedPixels)
 
-def randomSortRGB(pixels):
+def rgbSort(pixels, sortFunction):
+	# Splits image into channels, then applies sortFunction to each channel separately
 	sortedPixels = []
 	intervals = []
 	# Separate pixels into channels
@@ -148,8 +149,7 @@ def randomSortRGB(pixels):
 
 	# randomSort the channels separately
 	for channel in [0, 1, 2]:
-		channels[channel] = randomSort(channels[channel])
-
+		channels[channel] = sortFunction(channels[channel])
 	for y in range(len(pixels)):
 		sortedPixels.append([])
 		for x in range(len(pixels[0])):
@@ -174,8 +174,9 @@ def pixelSort():
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
 
-	sortedPixels = randomSortRGB(pixels)
-	# # sortedPixels = randomSort(pixels)
+	sortedPixels = rgbSort(pixels, randomSort)
+	# sortedPixels = rgbSort(pixels, selectiveSort)
+	# sortedPixels = randomSort(pixels)
 	# sortedPixels = selectiveSort(pixels)
 	print("Placing pixels...")
 	for y in range(img.size[1]):

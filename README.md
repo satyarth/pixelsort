@@ -2,7 +2,7 @@
 
 ### Usage
 
-`python pixelsort.py image.jpg -r [% of intervals NOT sorted]
+`python pixelsort.py /path/to/input/file.jpg -o [path to output file] -r [% of intervals NOT sorted]`
 
 #### selectiveSort
 
@@ -18,13 +18,13 @@ Splits rows into intervals of random widths, then sorts the intervals. The proba
 
 Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
 
-#### randomSortRGB
+#### rgbSort
 
-Performs randomSort on R, G, B channels separately
+Executes given sorting function on R, G, B channels separately
 
 Examples:
 
-http://a.pomf.se/lxgurx.png http://a.pomf.se/sgwbum.png
+http://a.pomf.se/lxgurx.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
 
 ---
 
