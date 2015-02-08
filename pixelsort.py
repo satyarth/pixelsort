@@ -12,19 +12,11 @@ p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",d
 args = p.parse_args()
 
 sys.setrecursionlimit(10000)
-<<<<<<< HEAD
-inputImage = 'image.jpg'
-outputImage = "output.png"
-threshold = 100 # Threshold for edge detection. Between 0 and 255*3
-randomness = 30 # What % of intervals are NOT sorted
 
-# End settings
-=======
 if args.output:
     outputImage = args.output
 else:
     outputImage = "output.png"
->>>>>>> 338c3d4929638007b99dfc72cf6096aa0f2506ff
 
 blackPixel = (0, 0, 0, 255)
 whitePixel = (255, 255, 255, 255)
@@ -46,26 +38,31 @@ def randomWidth():
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(50*(1-x))
-<<<<<<< HEAD
 	# width = int(50/(x+0.1))
-=======
->>>>>>> 338c3d4929638007b99dfc72cf6096aa0f2506ff
 	return(width)
 
-def selectiveSort(pixels,filterPixels):
+def selectiveSort(pixels):
+	img = Image.open(args.image)
+	edges = img.filter(ImageFilter.FIND_EDGES)
+	edges = edges.convert('RGBA')
+	edgeData = edges.load()
+
+	filterPixels = []
 	sortedPixels = []
 	edgePixels = []
 	intervals = []
+
+	print("Defining edges...")
+	for y in range(img.size[1]):
+		filterPixels.append([])
+		for x in range(img.size[0]):
+			filterPixels[y].append(edgeData[x, y])
 
 	print("Thresholding...")
 	for y in range(len(pixels)):
 		edgePixels.append([])
 		for x in range(len(pixels[0])):
-<<<<<<< HEAD
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
-=======
 			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < args.threshold:
->>>>>>> 338c3d4929638007b99dfc72cf6096aa0f2506ff
 				edgePixels[y].append(whitePixel)
 			else:
 				edgePixels[y].append(blackPixel)
@@ -138,34 +135,23 @@ def randomSort(pixels):
 
 def pixelSort():
 	print("Opening image...")
-<<<<<<< HEAD
-	img = Image.open(inputImage)
-=======
 	img = Image.open(args.image)
->>>>>>> 338c3d4929638007b99dfc72cf6096aa0f2506ff
-	edges = img.filter(ImageFilter.FIND_EDGES)
 	img = img.convert('RGBA')
-	edges = edges.convert('RGBA')
 
 	print("Get data...")
 	data = img.load()
-	edgeData = edges.load()
 	new = Image.new('RGBA', img.size)
 
 	pixels = []
-	filterPixels = []
-	intervals = []
+	
 	print("Getting pixels...")
-	#Load all of the pixels into the pixels list
 	for y in range(img.size[1]):
-		filterPixels.append([])
 		pixels.append([])
 		for x in range(img.size[0]):
-			filterPixels[y].append(edgeData[x, y])
 			pixels[y].append(data[x, y])
 
 	sortedPixels = randomSort(pixels)
-	# sortedPixels = selectiveSort(pixels, filterPixels)
+	# sortedPixels = selectiveSort(pixels)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
@@ -175,9 +161,4 @@ def pixelSort():
 	print("Saving image...")
 	new.save(outputImage)	
 
-
-<<<<<<< HEAD
 pixelSort()
-=======
-pixelSort()
->>>>>>> 338c3d4929638007b99dfc72cf6096aa0f2506ff
