@@ -10,6 +10,6 @@ Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.
 
 ## randomSort
 
-Splits rows into intervals of random widths, then sorts the intervals. The probability distribution of the widths can be specified, by default it's the Maxwell–Boltzmann distribution (for no particular reason).
+Splits rows into intervals of random widths, then sorts the intervals. The probability distribution of the widths can be specified.
 
 Based on https://gist.github.com/LycaonIsAWolf/667c5554e5d9d9a25ae6
