@@ -11,6 +11,10 @@ p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
 args = p.parse_args()
 
+randomness = int(args.randomness)
+print "Randomness =", randomness
+
+
 sys.setrecursionlimit(10000)
 
 if args.output:
@@ -22,15 +26,12 @@ blackPixel = (0, 0, 0, 255)
 whitePixel = (255, 255, 255, 255)
 
 def quickSort(pixels):
-	#Quicksort function that sorts pixels based on combined RGB values (R + B + G)
 	if pixels == []:
-		return pixels
-
+		return []
+	elif isinstance(pixels[0], tuple):
+		return(sorted(pixels, key = lambda x: x[0] + x[1] + x[2]))
 	else:
-		pivot = pixels[0]
-		lesser = quickSort([x for x in pixels[1:] if (x[0] + x[1] + x[2]) < (pivot[0] + pivot[1] + pivot[2])])
-		greater = quickSort([x for x in pixels[1:] if (x[0] + x[1] + x[2]) >= (pivot[0] + pivot[1] + pivot[2])])
-		return lesser + [pivot] + greater
+		return(sorted(pixels))
 
 
 def randomWidth():
@@ -90,7 +91,7 @@ def selectiveSort(pixels):
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>=args.randomness:
+			if random.randint(0,100)>=randomness:
 				row=row+quickSort(interval)
 			else:
 				row=row+interval
@@ -124,13 +125,35 @@ def randomSort(pixels):
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>=args.randomness:
+			if random.randint(0,100)>=randomness:
 				row=row+quickSort(interval)
 			else:
 				row=row+interval
 			xMin = xMax
 		row.append(pixels[y][0]) # wat
 		sortedPixels.append(row)
+	return(sortedPixels)
+
+def randomSortRGB(pixels):
+	sortedPixels = []
+	intervals = []
+	# Separate pixels into channels
+	channels = []
+	for channel in [0, 1, 2]:
+		channels.append([])
+		for y in range(len(pixels)):
+			channels[channel].append([])
+			for x in range(len(pixels[0])):
+				channels[channel][y].append(pixels[y][x][channel])
+
+	# randomSort the channels separately
+	for channel in [0, 1, 2]:
+		channels[channel] = randomSort(channels[channel])
+
+	for y in range(len(pixels)):
+		sortedPixels.append([])
+		for x in range(len(pixels[0])):
+			sortedPixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
 	return(sortedPixels)
 
 def pixelSort():
@@ -143,16 +166,17 @@ def pixelSort():
 	new = Image.new('RGBA', img.size)
 
 	pixels = []
-	
+	channels = []
+
 	print("Getting pixels...")
 	for y in range(img.size[1]):
 		pixels.append([])
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
 
-	sortedPixels = randomSort(pixels)
+	sortedPixels = randomSortRGB(pixels)
+	# # sortedPixels = randomSort(pixels)
 	# sortedPixels = selectiveSort(pixels)
-
 	print("Placing pixels...")
 	for y in range(img.size[1]):
 		for x in range(img.size[0]):
