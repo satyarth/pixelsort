@@ -1,21 +1,24 @@
 from PIL import Image, ImageFilter
-import random, sys, math
+import random
+import sys
+import math
+import argparse
 
-# Settings
+p = argparse.ArgumentParser(description="pixel mangle an image")
+p.add_argument("image", help="input image file")
+p.add_argument("-o", "--output", help="output image file, defaults to output.png",default="output.png")
+p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
+p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
+args = p.parse_args()
 
 sys.setrecursionlimit(10000)
-inputImage = 'image.jpg'
-outputImage = "output.png"
-threshold = 100 # Threshold for edge detection. Between 0 and 255*3
-randomness = 0 # What % of intervals are NOT sorted
-
-# End settings
+if args.output:
+    outputImage = args.output
+else:
+    outputImage = "output.png"
 
 blackPixel = (0, 0, 0, 255)
 whitePixel = (255, 255, 255, 255)
-
-print "Threshold:", threshold
-print "Randomness:", randomness
 
 def quickSort(pixels):
 	#Quicksort function that sorts pixels based on combined RGB values (R + B + G)
@@ -28,7 +31,6 @@ def quickSort(pixels):
 		greater = quickSort([x for x in pixels[1:] if (x[0] + x[1] + x[2]) >= (pivot[0] + pivot[1] + pivot[2])])
 		return lesser + [pivot] + greater
 
-
 def randomWidth():
 	x = random.random()
 	width = int(100*x**2*math.exp(-x*x))
@@ -39,7 +41,7 @@ def selectiveSort():
 	print("Sorting all pixels.")
 
 	print("Opening image...")
-	img = Image.open(inputImage)
+	img = Image.open(args.image)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	img = img.convert('RGBA')
 	edges = edges.convert('RGBA')
@@ -68,7 +70,7 @@ def selectiveSort():
 	for y in range(img.size[1]):
 		edgePixels.append([])
 		for x in range(img.size[0]):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
+			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < args.threshold:
 				edgePixels[y].append(whitePixel)
 			else:
 				edgePixels[y].append(blackPixel)
@@ -96,7 +98,7 @@ def selectiveSort():
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
+			if random.randint(0,100)>=args.randomness:
 				row=row+quickSort(interval)
 			else:
 				row=row+interval
@@ -115,7 +117,7 @@ def selectiveSort():
 
 def randomSort():
 	print("Opening image...")
-	img = Image.open(inputImage)
+	img = Image.open(args.image)
 	img = img.convert('RGBA')
 
 	print("Get data...")
@@ -155,7 +157,7 @@ def randomSort():
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
+			if random.randint(0,100)>=args.randomness:
 				row=row+quickSort(interval)
 			else:
 				row=row+interval
