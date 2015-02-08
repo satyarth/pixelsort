@@ -7,7 +7,7 @@ sys.setrecursionlimit(10000)
 inputImage = 'image.jpg'
 outputImage = "output.png"
 threshold = 100 # Threshold for edge detection. Between 0 and 255*3
-randomness = 0 # What % of intervals are NOT sorted
+randomness = 30 # What % of intervals are NOT sorted
 
 # End settings
 
@@ -34,6 +34,7 @@ def randomWidth():
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(50*(1-x))
+	# width = int(50/(x+0.1))
 	return(width)
 
 def selectiveSort(pixels,filterPixels):
