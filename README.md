@@ -2,7 +2,7 @@
 
 ### Usage
 
-`python pixelsort.py /path/to/input/file.jpg -o [path to output file] -r [% of intervals NOT sorted]`
+`python pixelsort.py /path/to/input/file.jpg -o [path to output file] -r [% of intervals NOT sorted] -t [threshold (between 0 and 255*3, only used by selectiveSort)]`
 
 #### selectiveSort
 
@@ -24,7 +24,7 @@ Executes given sorting function on R, G, B channels separately
 
 Examples:
 
-http://a.pomf.se/lxgurx.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
+http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
 
 ---
 

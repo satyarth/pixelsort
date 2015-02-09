@@ -35,7 +35,7 @@ def quickSort(pixels):
 		return(sorted(pixels))
 
 def randomWidth():
-	# Defines the distribution of widths
+	# Defines the distribution of widths in randomSort
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(50*(1-x))
