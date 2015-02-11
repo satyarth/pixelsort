@@ -8,7 +8,7 @@ import argparse
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
 p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
-p.add_argument("-i", "--intFunction", help="random, edges",default="random")
+p.add_argument("-i", "--intFunction", help="random, edges, none",default="random")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
@@ -107,10 +107,37 @@ def intRandom(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
+def intWaves(pixels):
+	intervals = []
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		x = 0
+		while True:
+			width = clength + random.randint(0,10)
+			x += width
+			if x > len(pixels[0]):
+				intervals[y].append(len(pixels[0]))
+				break
+			else:
+				intervals[y].append(x)
+	return(intervals)
+
+def intNone(pixels):
+	intervals = []
+	for y in range(len(pixels)):
+		intervals.append([len(pixels[0])])
+	return(intervals)
+
 if args.intFunction == "random":
 	intFunction = intRandom
 elif args.intFunction == "edges":
 	intFunction = intEdges
+elif args.intFunction == "waves":
+	intFunction = intWaves
+elif args.intFunction == "none":
+	intFunction = intNone
 else:
 	print "Error! Invalid interval function."
 
@@ -182,7 +209,7 @@ def pixelSort():
 			intervalses.append(intRandom(pixels))
 		sortedPixels = sortPixelsMultichannel(pixels, intervalses)
 	else:
-		intervals = intRandom(pixels)
+		intervals = intFunction(pixels)
 		sortedPixels = sortPixels(pixels, intervals)
 
 	print("Placing pixels...")
