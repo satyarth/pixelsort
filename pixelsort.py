@@ -1,30 +1,36 @@
 from PIL import Image, ImageFilter
 import random
+import string
 import sys
 import math
 import argparse
 
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
-p.add_argument("-o", "--output", help="output image file, defaults to output.png",default="output.png")
+p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
+p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
 args = p.parse_args()
 
 randomness = int(args.randomness)
 threshold = int(args.threshold)
-print "Randomness =", randomness
-print "Threshold =", threshold
+clength = int(args.clength)
 
-sys.setrecursionlimit(10000)
+print "Randomness =", randomness, "%"
+print "Threshold =", threshold
+print "Characteristic length = ", clength
+
+blackPixel = (0, 0, 0, 255)
+whitePixel = (255, 255, 255, 255)
+
+def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
+	return ''.join(random.choice(chars) for _ in range(size))
 
 if args.output:
     outputImage = args.output
 else:
-    outputImage = "output.png"
-
-blackPixel = (0, 0, 0, 255)
-whitePixel = (255, 255, 255, 255)
+    outputImage = id_generator()+".png"
 
 def quickSort(pixels):
 	if pixels == []:
@@ -38,7 +44,7 @@ def randomWidth():
 	# Defines the distribution of widths in randomSort
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
-	width = int(50*(1-x))
+	width = int(clength*(1-x))
 	# width = int(50/(x+0.1))
 	return(width)
 
@@ -174,16 +180,17 @@ def pixelSort():
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
 
-	sortedPixels = rgbSort(pixels, randomSort)
-	# sortedPixels = rgbSort(pixels, selectiveSort)
-	# sortedPixels = randomSort(pixels)
-	# sortedPixels = selectiveSort(pixels)
+	#sortedPixels = rgbSort(pixels, randomSort)
+	#sortedPixels = rgbSort(pixels, selectiveSort)
+	sortedPixels = randomSort(pixels)
+	#sortedPixels = selectiveSort(pixels)
 	print("Placing pixels...")
 	for y in range(img.size[1]):
 		for x in range(img.size[0]):
 			new.putpixel((x, y), sortedPixels[y][x]) #apply the pixels to the new image
 
 	print("Saving image...")
-	new.save(outputImage)	
+	new.save(outputImage)
+	print "Done!", outputImage
 
 pixelSort()
