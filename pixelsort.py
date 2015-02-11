@@ -8,9 +8,11 @@ import argparse
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
 p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
+p.add_argument("-i", "--intFunction", help="random, edges",default="random")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
+p.add_argument("-m", "--multichannel", help="'y' enables multichannel mode",default='n')
 args = p.parse_args()
 
 randomness = int(args.randomness)
@@ -105,10 +107,16 @@ def intRandom(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
-def rgbSort(pixels, sortFunction):
+if args.intFunction == "random":
+	intFunction = intRandom
+elif args.intFunction == "edges":
+	intFunction = intEdges
+else:
+	print "Error! Invalid interval function."
+
+def sortPixelsMultichannel(pixels, intervalses):
 	# Splits image into channels, then applies sortFunction to each channel separately
 	sortedPixels = []
-	intervals = []
 	# Separate pixels into channels
 	channels = []
 	for channel in [0, 1, 2]:
@@ -120,11 +128,30 @@ def rgbSort(pixels, sortFunction):
 
 	# randomSort the channels separately
 	for channel in [0, 1, 2]:
-		channels[channel] = sortFunction(channels[channel])
+		channels[channel] = sortPixels(channels[channel],intervalses[channel])
 	for y in range(len(pixels)):
 		sortedPixels.append([])
 		for x in range(len(pixels[0])):
 			sortedPixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
+	return(sortedPixels)
+
+def sortPixels(pixels, intervals):
+	print("Sorting intervals...")
+	sortedPixels=[]
+	for y in range(len(pixels)):
+		row=[]
+		xMin = 0
+		for xMax in intervals[y]:
+			interval = []
+			for x in range(xMin, xMax):
+				interval.append(pixels[y][x])
+			if random.randint(0,100)>=randomness:
+				row=row+quickSort(interval)
+			else:
+				row=row+interval
+			xMin = xMax
+		row.append(pixels[y][0]) # wat
+		sortedPixels.append(row)
 	return(sortedPixels)
 
 def pixelSort():
@@ -149,24 +176,14 @@ def pixelSort():
 	#sortedPixels = randomSort(pixels)
 	#sortedPixels = selectiveSort(pixels)
 
-	intervals = intRandom(pixels)
-
-	print("Sorting intervals...")
-	sortedPixels=[]
-	for y in range(len(pixels)):
-		row=[]
-		xMin = 0
-		for xMax in intervals[y]:
-			interval = []
-			for x in range(xMin, xMax):
-				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
-				row=row+quickSort(interval)
-			else:
-				row=row+interval
-			xMin = xMax
-		row.append(pixels[y][0]) # wat
-		sortedPixels.append(row)
+	if args.multichannel == 'y': # If multichannel mode is enabled
+		intervalses = []		 # intervalses: List of intervals
+		for channel in [0, 1, 2]:
+			intervalses.append(intRandom(pixels))
+		sortedPixels = sortPixelsMultichannel(pixels, intervalses)
+	else:
+		intervals = intRandom(pixels)
+		sortedPixels = sortPixels(pixels, intervals)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
