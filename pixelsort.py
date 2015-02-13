@@ -26,6 +26,7 @@ print "Characteristic length = ", clength
 blackPixel = (0, 0, 0, 255)
 whitePixel = (255, 255, 255, 255)
 
+# Generates names for output files
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
@@ -34,6 +35,7 @@ if args.output:
 else:
     outputImage = id_generator()+".png"
 
+# Sorts a given row of pixels, can handle individual channels as well
 def quickSort(pixels):
 	if pixels == []:
 		return []
@@ -42,14 +44,15 @@ def quickSort(pixels):
 	else:
 		return(sorted(pixels))
 
+# Generates random widths for intervals. Used by intRandom()
 def randomWidth():
-	# Defines the distribution of widths in randomSort
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(clength*(1-x))
 	# width = int(50/(x+0.1))
 	return(width)
 
+# Functions starting with int return intervals according to which to sort
 def intEdges(pixels):
 	img = Image.open(args.image)
 	edges = img.filter(ImageFilter.FIND_EDGES)
@@ -130,6 +133,7 @@ def intNone(pixels):
 		intervals.append([len(pixels[0])])
 	return(intervals)
 
+# Defining intervals from command line arguments
 if args.intFunction == "random":
 	intFunction = intRandom
 elif args.intFunction == "edges":
@@ -141,8 +145,8 @@ elif args.intFunction == "none":
 else:
 	print "Error! Invalid interval function."
 
+# Sorts each channel separately
 def sortPixelsMultichannel(pixels, intervalses):
-	# Splits image into channels, then applies sortFunction to each channel separately
 	sortedPixels = []
 	# Separate pixels into channels
 	channels = []
@@ -153,7 +157,7 @@ def sortPixelsMultichannel(pixels, intervalses):
 			for x in range(len(pixels[0])):
 				channels[channel][y].append(pixels[y][x][channel])
 
-	# randomSort the channels separately
+	# sort the channels separately
 	for channel in [0, 1, 2]:
 		channels[channel] = sortPixels(channels[channel],intervalses[channel])
 	for y in range(len(pixels)):
@@ -162,8 +166,10 @@ def sortPixelsMultichannel(pixels, intervalses):
 			sortedPixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
 	return(sortedPixels)
 
+# Sorts the image
 def sortPixels(pixels, intervals):
 	print("Sorting intervals...")
+	# Hold sorted pixels
 	sortedPixels=[]
 	for y in range(len(pixels)):
 		row=[]
@@ -186,7 +192,7 @@ def pixelSort():
 	img = Image.open(args.image)
 	img = img.convert('RGBA')
 
-	print("Get data...")
+	print("Getting data...")
 	data = img.load()
 	new = Image.new('RGBA', img.size)
 
@@ -197,11 +203,6 @@ def pixelSort():
 		pixels.append([])
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
-
-	#sortedPixels = rgbSort(pixels, randomSort)
-	#sortedPixels = rgbSort(pixels, selectiveSort)
-	#sortedPixels = randomSort(pixels)
-	#sortedPixels = selectiveSort(pixels)
 
 	if args.multichannel == 'y': # If multichannel mode is enabled
 		intervalses = []		 # intervalses: List of intervals
@@ -215,7 +216,7 @@ def pixelSort():
 	print("Placing pixels...")
 	for y in range(img.size[1]):
 		for x in range(img.size[0]):
-			new.putpixel((x, y), sortedPixels[y][x]) #apply the pixels to the new image
+			new.putpixel((x, y), sortedPixels[y][x])
 
 	print("Saving image...")
 	new.save(outputImage)

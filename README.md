@@ -1,9 +1,15 @@
 # pixelsort
 
+### What is Pixel Sorting?
+
+Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pixelsorting](http://www.reddit.com/r/pixelsorting/top/)
+
 ### Usage
-
-`python pixelsort.py /path/to/input/file.jpg -i [interval function] -m [multichannel] -o [output] -r [randomness] -t [threshold] -c [clength]`
-
+```
+git clone https://github.com/accden/pixelsort.git
+cd pixelsort
+python pixelsort.py /path/to/input/file.jpg -i [interval function] -m [multichannel] -o [output] -r [randomness] -t [threshold] -c [clength]
+```
 ####Parameters:
 
 * **`i`(interval function):** Controls how the intervals used for sorting are defined. Options:
@@ -27,6 +33,11 @@ Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.
 * **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default.
 
 * **`c`(clength):** Characteristic length for the random width generator.
+
+### todo
+
+* Allow defining different intervals for different channels.
+* Sorting along arbitrary functions
 
 ---
 
