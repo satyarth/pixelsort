@@ -42,7 +42,7 @@ def quickSort(pixels):
 	elif isinstance(pixels[0], tuple):
 		return(sorted(pixels, key = lambda x: x[0] + x[1] + x[2]))
 	else:
-		return(sorted(pixels))
+		return(sorted(pixels, key = lambda x: x))
 
 # Generates random widths for intervals. Used by intRandom()
 def randomWidth():
