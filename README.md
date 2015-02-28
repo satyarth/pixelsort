@@ -20,20 +20,21 @@ python pixelsort.py %PathToImage%
 
 * **`i`(interval function):** Controls how the intervals used for sorting are defined. Options:
 
-1. `random`(default): Uniform random widths
+	1. `random`(default): Uniform random widths
 
-Example usage: `python pixelsort.py %PathToImage% -i random -c 200`
+	Example usage: `python pixelsort.py %PathToImage% -i random -c 200`
 
-Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
+	Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
 
-2. `edges`: Defined by edges in the image. Can control via threshold.
+	2. `edges`: Defined by edges in the image. Can control via threshold.
 
-Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
+	Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
 
-Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
+	Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
 
-3. `waves`: Fuzzy waves of approximately the same widths.
-4. `none`: Sort entire rows.
+	3. `waves`: Fuzzy waves of approximately the same widths.
+	
+	4. `none`: Sort entire rows.
 
 * **`m`(multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
 Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
