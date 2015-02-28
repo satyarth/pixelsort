@@ -14,16 +14,22 @@ The interval function (selected via command line, `random` by default) partition
 ```
 git clone https://github.com/accden/pixelsort.git
 cd pixelsort
-python pixelsort.py /path/to/input/file.jpg -i [interval function] -m [multichannel] -o [output] -r [randomness] -t [threshold] -c [clength]
+python pixelsort.py %PathToImage%
 ```
-####Parameters:
+####Parameters (Command Line):
 
 * **`i`(interval function):** Controls how the intervals used for sorting are defined. Options:
 
 1. `random`(default): Uniform random widths
+
+Example usage: `python pixelsort.py %PathToImage% -i random -c 200`
+
 Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
 
 2. `edges`: Defined by edges in the image. Can control via threshold.
+
+Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
+
 Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
 
 3. `waves`: Fuzzy waves of approximately the same widths.
@@ -36,7 +42,7 @@ Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.
 
 * **`r`(randomness):** What % of intervals *not* to sort. 0 by default.
 
-* **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default.
+* **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default. Takes values between 0 and 255*3
 
 * **`c`(clength):** Characteristic length for the random width generator.
 
