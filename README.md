@@ -20,21 +20,19 @@ python pixelsort.py %PathToImage%
 
 * **`i`(interval function):** Controls how the intervals used for sorting are defined. Options:
 
-	1. `random`(default): Uniform random widths
+`random`(default): Uniform random widths
 
-	Example usage: `python pixelsort.py %PathToImage% -i random -c 200`
+Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
 
-	Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
+`edges`: Defined by edges in the image. Can control via threshold.
 
-	2. `edges`: Defined by edges in the image. Can control via threshold.
+Example usage: `python pixelsort.py %PathToImage% -i edges -t 300
 
-	Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
+Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
 
-	Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
+`waves`: Fuzzy waves of approximately the same widths.
 
-	3. `waves`: Fuzzy waves of approximately the same widths.
-	
-	4. `none`: Sort entire rows.
+`none`: Sort entire rows.
 
 * **`m`(multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
 Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
@@ -43,7 +41,7 @@ Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.
 
 * **`r`(randomness):** What % of intervals *not* to sort. 0 by default.
 
-* **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default. Takes values between 0 and 255*3
+* **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default.
 
 * **`c`(clength):** Characteristic length for the random width generator.
 
