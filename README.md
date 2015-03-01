@@ -18,7 +18,7 @@ python pixelsort.py %PathToImage%
 ```
 ####Parameters (Command Line):
 
-* **`i`(interval function):** Controls how the intervals used for sorting are defined. Options:
+* **`-i` (interval function):** Controls how the intervals used for sorting are defined. Options:
 
 `random`(default): Uniform random widths
 
@@ -32,21 +32,29 @@ Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
 
 Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
 
+`file`: Edges defined by an input file. Use `-f` to specify the location of the file.
+
+Example usage: `python pixelsort.py %PathToImage% -i file -f edges.png`
+
+`file-edges`: Edges defined by an input file which undergoes edge detection. Use `-f` to specify the location of the file, `-t` to specify the threshold.
+
+Example usage: `python pixelsort.py %PathToImage% -i file-edges -f edges.png`
+
 `waves`: Fuzzy waves of approximately the same widths.
 
 `none`: Sort entire rows.
 
-* **`m`(multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
+* **`-m` (multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
 
 Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
 
-* **`o`(output file):** Path of output file. Randomly generates a file name by default.
+* **`-o` (output file):** Path of output file. Randomly generates a file name by default.
 
-* **`r`(randomness):** What % of intervals *not* to sort. 0 by default.
+* **`-r` (randomness):** What % of intervals *not* to sort. 0 by default.
 
-* **`t`(threshold):** Defines the threshold while performing edge detection. `100` by default.
+* **`-t` (threshold):** Defines the threshold while performing edge detection. `100` by default.
 
-* **`c`(clength):** Characteristic length for the random width generator.
+* **`-c` (clength):** Characteristic length for the random width generator.
 
 ### todo
 

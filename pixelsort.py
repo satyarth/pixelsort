@@ -8,7 +8,8 @@ import argparse
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
 p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
-p.add_argument("-i", "--intFunction", help="random, edges, none",default="random")
+p.add_argument("-i", "--intFunction", help="random, edges, waves, file, none",default="random")
+p.add_argument("-f", "--intfile", help="image for intervals",default="in.png")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
@@ -127,6 +128,74 @@ def intWaves(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
+def intFile(pixels):
+	intervals = []
+	filePixels = []
+
+	img = Image.open(args.intfile)
+	img = img.convert('RGBA')
+	data = img.load()
+	for y in range(img.size[1]):
+		filePixels.append([])
+		for x in range(img.size[0]):
+			filePixels[y].append(data[x, y])
+
+	print("Cleaning up edges...")
+	for y in range(len(pixels)-1,1,-1):
+		for x in range(len(pixels[0])-1,1,-1):
+			if filePixels[y][x] == blackPixel and filePixels[y][x-1] == blackPixel:
+				filePixels[y][x] = whitePixel
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		for x in range(len(pixels[0])):
+			if filePixels[y][x] == blackPixel:
+				intervals[y].append(x)
+		intervals[y].append(len(pixels[0]))
+
+	return intervals
+
+def intFileEdges(pixels):
+	img = Image.open(args.intfile)
+	edges = img.filter(ImageFilter.FIND_EDGES)
+	edges = edges.convert('RGBA')
+	edgeData = edges.load()
+
+	filterPixels = []
+	edgePixels = []
+	intervals = []
+
+	print("Defining edges...")
+	for y in range(img.size[1]):
+		filterPixels.append([])
+		for x in range(img.size[0]):
+			filterPixels[y].append(edgeData[x, y])
+
+	print("Thresholding...")
+	for y in range(len(pixels)):
+		edgePixels.append([])
+		for x in range(len(pixels[0])):
+			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
+				edgePixels[y].append(whitePixel)
+			else:
+				edgePixels[y].append(blackPixel)
+
+	print("Cleaning up edges...")
+	for y in range(len(pixels)-1,1,-1):
+		for x in range(len(pixels[0])-1,1,-1):
+			if edgePixels[y][x] == blackPixel and edgePixels[y][x-1] == blackPixel:
+				edgePixels[y][x] = whitePixel
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		for x in range(len(pixels[0])):
+			if edgePixels[y][x] == blackPixel:
+				intervals[y].append(x)
+		intervals[y].append(len(pixels[0]))
+	return(intervals)
+
 def intNone(pixels):
 	intervals = []
 	for y in range(len(pixels)):
@@ -140,6 +209,10 @@ elif args.intFunction == "edges":
 	intFunction = intEdges
 elif args.intFunction == "waves":
 	intFunction = intWaves
+elif args.intFunction == "file":
+	intFunction = intFile
+elif args.intFunction == "file-edges":
+	intFunction = intFileEdges
 elif args.intFunction == "none":
 	intFunction = intNone
 else:
