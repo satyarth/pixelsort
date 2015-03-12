@@ -8,8 +8,8 @@ import argparse
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
 p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
-p.add_argument("-i", "--intFunction", help="random, edges, waves, file, none",default="random")
-p.add_argument("-f", "--intfile", help="image for intervals",default="in.png")
+p.add_argument("-i", "--int_function", help="random, edges, waves, file, none",default="random")
+p.add_argument("-f", "--int_file", help="image for intervals",default="in.png")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
@@ -24,8 +24,8 @@ print "Randomness =", randomness, "%"
 print "Threshold =", threshold
 print "Characteristic length = ", clength
 
-blackPixel = (0, 0, 0, 255)
-whitePixel = (255, 255, 255, 255)
+black_pixel = (0, 0, 0, 255)
+white_pixel = (255, 255, 255, 255)
 
 # Generates names for output files
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
@@ -37,16 +37,16 @@ else:
     outputImage = id_generator()+".png"
 
 # Sorts a given row of pixels, can handle individual channels as well
-def quickSort(pixels):
-	if pixels == []:
+def sort_interval(interval):
+	if interval == []:
 		return []
-	elif isinstance(pixels[0], tuple):
-		return(sorted(pixels, key = lambda x: x[0] + x[1] + x[2]))
+	elif isinstance(interval[0], tuple):
+		return(sorted(interval, key = lambda x: x[0] + x[1] + x[2]))
 	else:
-		return(sorted(pixels, key = lambda x: x))
+		return(sorted(interval, key = lambda x: x))
 
-# Generates random widths for intervals. Used by intRandom()
-def randomWidth():
+# Generates random widths for intervals. Used by int_random()
+def random_width():
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(clength*(1-x))
@@ -54,47 +54,47 @@ def randomWidth():
 	return(width)
 
 # Functions starting with int return intervals according to which to sort
-def intEdges(pixels):
+def int_edges(pixels):
 	img = Image.open(args.image)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
-	edgeData = edges.load()
+	edge_data = edges.load()
 
-	filterPixels = []
-	edgePixels = []
+	filter_pixels = []
+	edge_pixels = []
 	intervals = []
 
 	print("Defining edges...")
 	for y in range(img.size[1]):
-		filterPixels.append([])
+		filter_pixels.append([])
 		for x in range(img.size[0]):
-			filterPixels[y].append(edgeData[x, y])
+			filter_pixels[y].append(edge_data[x, y])
 
 	print("Thresholding...")
 	for y in range(len(pixels)):
-		edgePixels.append([])
+		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
-				edgePixels[y].append(whitePixel)
+			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < threshold:
+				edge_pixels[y].append(white_pixel)
 			else:
-				edgePixels[y].append(blackPixel)
+				edge_pixels[y].append(black_pixel)
 
 	print("Cleaning up edges...")
 	for y in range(len(pixels)-1,1,-1):
 		for x in range(len(pixels[0])-1,1,-1):
-			if edgePixels[y][x] == blackPixel and edgePixels[y][x-1] == blackPixel:
-				edgePixels[y][x] = whitePixel
+			if edge_pixels[y][x] == black_pixel and edge_pixels[y][x-1] == black_pixel:
+				edge_pixels[y][x] = white_pixel
 
 	print("Defining intervals...")
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if edgePixels[y][x] == blackPixel:
+			if edge_pixels[y][x] == black_pixel:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
 
-def intRandom(pixels):
+def int_random(pixels):
 	intervals = []
 
 	print("Defining intervals...")
@@ -102,7 +102,7 @@ def intRandom(pixels):
 		intervals.append([])
 		x = 0
 		while True:
-			width = randomWidth()
+			width = random_width()
 			x += width
 			if x > len(pixels[0]):
 				intervals[y].append(len(pixels[0]))
@@ -111,7 +111,7 @@ def intRandom(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
-def intWaves(pixels):
+def int_waves(pixels):
 	intervals = []
 
 	print("Defining intervals...")
@@ -128,99 +128,99 @@ def intWaves(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
-def intFile(pixels):
+def int_file(pixels):
 	intervals = []
-	filePixels = []
+	file_pixels = []
 
-	img = Image.open(args.intfile)
+	img = Image.open(args.int_file)
 	img = img.convert('RGBA')
 	data = img.load()
 	for y in range(img.size[1]):
-		filePixels.append([])
+		file_pixels.append([])
 		for x in range(img.size[0]):
-			filePixels[y].append(data[x, y])
+			file_pixels[y].append(data[x, y])
 
 	print("Cleaning up edges...")
 	for y in range(len(pixels)-1,1,-1):
 		for x in range(len(pixels[0])-1,1,-1):
-			if filePixels[y][x] == blackPixel and filePixels[y][x-1] == blackPixel:
-				filePixels[y][x] = whitePixel
+			if file_pixels[y][x] == black_pixel and file_pixels[y][x-1] == black_pixel:
+				file_pixels[y][x] = white_pixel
 
 	print("Defining intervals...")
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if filePixels[y][x] == blackPixel:
+			if file_pixels[y][x] == black_pixel:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 
 	return intervals
 
-def intFileEdges(pixels):
-	img = Image.open(args.intfile)
+def int_file_edges(pixels):
+	img = Image.open(args.int_file)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
-	edgeData = edges.load()
+	edge_data = edges.load()
 
-	filterPixels = []
-	edgePixels = []
+	filter_pixels = []
+	edge_pixels = []
 	intervals = []
 
 	print("Defining edges...")
 	for y in range(img.size[1]):
-		filterPixels.append([])
+		filter_pixels.append([])
 		for x in range(img.size[0]):
-			filterPixels[y].append(edgeData[x, y])
+			filter_pixels[y].append(edge_data[x, y])
 
 	print("Thresholding...")
 	for y in range(len(pixels)):
-		edgePixels.append([])
+		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filterPixels[y][x][0] + filterPixels[y][x][1] + filterPixels[y][x][2] < threshold:
-				edgePixels[y].append(whitePixel)
+			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < threshold:
+				edge_pixels[y].append(white_pixel)
 			else:
-				edgePixels[y].append(blackPixel)
+				edge_pixels[y].append(black_pixel)
 
 	print("Cleaning up edges...")
 	for y in range(len(pixels)-1,1,-1):
 		for x in range(len(pixels[0])-1,1,-1):
-			if edgePixels[y][x] == blackPixel and edgePixels[y][x-1] == blackPixel:
-				edgePixels[y][x] = whitePixel
+			if edge_pixels[y][x] == black_pixel and edge_pixels[y][x-1] == black_pixel:
+				edge_pixels[y][x] = white_pixel
 
 	print("Defining intervals...")
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if edgePixels[y][x] == blackPixel:
+			if edge_pixels[y][x] == black_pixel:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
 
-def intNone(pixels):
+def int_none(pixels):
 	intervals = []
 	for y in range(len(pixels)):
 		intervals.append([len(pixels[0])])
 	return(intervals)
 
-# Defining intervals from command line arguments
-if args.intFunction == "random":
-	intFunction = intRandom
-elif args.intFunction == "edges":
-	intFunction = intEdges
-elif args.intFunction == "waves":
-	intFunction = intWaves
-elif args.intFunction == "file":
-	intFunction = intFile
-elif args.intFunction == "file-edges":
-	intFunction = intFileEdges
-elif args.intFunction == "none":
-	intFunction = intNone
+# Get function to define intervals from command line arguments
+if args.int_function == "random":
+	int_function = int_random
+elif args.int_function == "edges":
+	int_function = int_edges
+elif args.int_function == "waves":
+	int_function = int_waves
+elif args.int_function == "file":
+	int_function = int_file
+elif args.int_function == "file-edges":
+	int_function = int_file_edges
+elif args.int_function == "none":
+	int_function = int_none
 else:
 	print "Error! Invalid interval function."
 
 # Sorts each channel separately
-def sortPixelsMultichannel(pixels, intervalses):
-	sortedPixels = []
+def sort_image_multichannel(pixels, intervalses):
+	sorted_pixels = []
 	# Separate pixels into channels
 	channels = []
 	for channel in [0, 1, 2]:
@@ -232,18 +232,18 @@ def sortPixelsMultichannel(pixels, intervalses):
 
 	# sort the channels separately
 	for channel in [0, 1, 2]:
-		channels[channel] = sortPixels(channels[channel],intervalses[channel])
+		channels[channel] = sort_image(channels[channel],intervalses[channel])
 	for y in range(len(pixels)):
-		sortedPixels.append([])
+		sorted_pixels.append([])
 		for x in range(len(pixels[0])):
-			sortedPixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
-	return(sortedPixels)
+			sorted_pixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
+	return(sorted_pixels)
 
 # Sorts the image
-def sortPixels(pixels, intervals):
+def sort_image(pixels, intervals):
 	print("Sorting intervals...")
 	# Hold sorted pixels
-	sortedPixels=[]
+	sorted_pixels=[]
 	for y in range(len(pixels)):
 		row=[]
 		xMin = 0
@@ -252,15 +252,15 @@ def sortPixels(pixels, intervals):
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
 			if random.randint(0,100)>=randomness:
-				row=row+quickSort(interval)
+				row = row + sort_interval(interval)
 			else:
-				row=row+interval
+				row = row + interval
 			xMin = xMax
 		row.append(pixels[y][0]) # wat
-		sortedPixels.append(row)
-	return(sortedPixels)
+		sorted_pixels.append(row)
+	return(sorted_pixels)
 
-def pixelSort():
+def pixel_sort():
 	print("Opening image...")
 	img = Image.open(args.image)
 	img = img.convert('RGBA')
@@ -280,19 +280,19 @@ def pixelSort():
 	if args.multichannel == 'y': # If multichannel mode is enabled
 		intervalses = []		 # intervalses: List of intervals
 		for channel in [0, 1, 2]:
-			intervalses.append(intRandom(pixels))
-		sortedPixels = sortPixelsMultichannel(pixels, intervalses)
+			intervalses.append(int_random(pixels))
+		sorted_pixels = sort_image_multichannel(pixels, intervalses)
 	else:
-		intervals = intFunction(pixels)
-		sortedPixels = sortPixels(pixels, intervals)
+		intervals = int_function(pixels)
+		sorted_pixels = sort_image(pixels, intervals)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
 		for x in range(img.size[0]):
-			new.putpixel((x, y), sortedPixels[y][x])
+			new.putpixel((x, y), sorted_pixels[y][x])
 
 	print("Saving image...")
 	new.save(outputImage)
 	print "Done!", outputImage
 
-pixelSort()
+pixel_sort()
