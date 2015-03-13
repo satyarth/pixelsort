@@ -6,7 +6,7 @@ Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pi
 
 ### How this program works:
 
-The interval function (selected via command line, `random` by default) partitions each row of the image into intervals and returns an array `intervals` that defines them. This array, along with the image (in RGB array form) are passed to `sortPixels` which does the dirty work and returns an array of sorted pixels.
+The interval function (selected via command line, `random` by default) partitions each row of the image into intervals and returns an array `intervals` that defines them. This array, along with the image (in RGB array form) are passed to `sort_image` which does the dirty work and returns an array of sorted pixels.
 
 *Multichannel mode:* used to sort the pixels in each color channel separately.
 
@@ -14,39 +14,11 @@ The interval function (selected via command line, `random` by default) partition
 ```
 git clone https://github.com/accden/pixelsort.git
 cd pixelsort
-python pixelsort.py %PathToImage%
+python pixelsort.py %PathToImage% [options]
 ```
 ####Parameters (Command Line):
 
-* **`-i` (interval function):** Controls how the intervals used for sorting are defined. Options:
-
-`random`(default): Uniform random widths
-
-Example usage: `python pixelsort.py %PathToImage% -i random -c 200`
-
-Examples: http://a.pomf.se/yvadry.png http://a.pomf.se/sckkfy.png
-
-`edges`: Defined by edges in the image. Can control via threshold.
-
-Example usage: `python pixelsort.py %PathToImage% -i edges -t 300`
-
-Examples: http://a.pomf.se/qfmlvc.png http://a.pomf.se/mcamlr.png http://a.pomf.se/vhitxl.webm http://a.pomf.se/nyvwft.webm
-
-`file`: Edges defined by an input file. Use `-f` to specify the location of the file.
-
-Example usage: `python pixelsort.py %PathToImage% -i file -f edges.png`
-
-`file-edges`: Edges defined by an input file which undergoes edge detection. Use `-f` to specify the location of the file, `-t` to specify the threshold.
-
-Example usage: `python pixelsort.py %PathToImage% -i file-edges -f edges.png`
-
-`waves`: Fuzzy waves of approximately the same widths.
-
-`none`: Sort entire rows.
-
-* **`-m` (multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
-
-Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.se/jsvcgy.png
+* **`-i` (interval function):** Controls how the intervals used for sorting are defined. 
 
 * **`-o` (output file):** Path of output file. Randomly generates a file name by default.
 
@@ -55,6 +27,46 @@ Examples: http://a.pomf.se/txvbmf.png http://a.pomf.se/sgwbum.png http://a.pomf.
 * **`-t` (threshold):** Defines the threshold while performing edge detection. `100` by default.
 
 * **`-c` (clength):** Characteristic length for the random width generator.
+
+* **`-f` (intervals file):** Image used to define intervals.
+
+* **`-m` (multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
+
+#### Interval Functions
+
+* `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+
+`python pixelsort.py examples/image.jpg -i random -c 20`
+
+![random](/examples/random.png)
+
+* `edges`: Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
+
+`python pixelsort.py examples/image.jpg -i edges -t 250`
+
+![edges](/examples/edges.png)
+
+* `none`: Intervals = entire rows.
+
+`python pixelsort.py examples/image.jpg -i none`
+
+![none](/examples/none.png)
+
+* `waves`: Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
+
+`python pixelsort.py examples/image.jpg -i waves`
+
+![none](/examples/waves.png)
+
+* `file`: Intervals taken from image specified with `-f`. Must be black and white and the same size as the input image.
+
+`python pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
+
+![file](/examples/intervals.png)
+
+(generated with [elementary-ca](https://github.com/satyarth/elementary-ca))
+
+![file](/examples/file.png)
 
 ### todo
 
