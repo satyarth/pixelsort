@@ -8,11 +8,9 @@ Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pi
 
 The interval function (selected via command line, `random` by default) partitions each row of the image into intervals and returns an array `intervals` that defines them. This array, along with the image (in RGB array form) are passed to `sort_image` which does the dirty work and returns an array of sorted pixels.
 
-*Multichannel mode:* used to sort the pixels in each color channel separately.
-
 ### Usage
 ```
-git clone https://github.com/accden/pixelsort.git
+git clone https://github.com/satyarth/pixelsort.git
 cd pixelsort
 python pixelsort.py %PathToImage% [options]
 ```
