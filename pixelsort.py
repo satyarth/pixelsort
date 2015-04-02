@@ -5,8 +5,8 @@ import argparse
 
 p = argparse.ArgumentParser(description="pixel mangle an image")
 p.add_argument("image", help="input image file")
-p.add_argument("-o", "--output", help="output image file, defaults to %input%-sorted.png")
-p.add_argument("-i", "--int_function", help="random, edges, waves, file, none",default="random")
+p.add_argument("-o", "--output", help="output image file, defaults to a randomly generated string")
+p.add_argument("-i", "--int_function", help="random, edges, waves, file, none", default="random")
 p.add_argument("-f", "--int_file", help="image for intervals",default="in.png")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
@@ -207,7 +207,8 @@ try:
 		"file-edges": int_file_edges,
 		"none": int_none}[args.int_function]
 except KeyError:
-	print "Error! Invalid interval function."
+	print "[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]"
+	int_function = int_random
 
 # Sorts the image
 def sort_image(pixels, intervals):
@@ -221,7 +222,7 @@ def sort_image(pixels, intervals):
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100)>=randomness:
+			if random.randint(0,100) >= randomness:
 				row = row + sort_interval(interval)
 			else:
 				row = row + interval
