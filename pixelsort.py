@@ -198,19 +198,15 @@ def int_none(pixels):
 	return(intervals)
 
 # Get function to define intervals from command line arguments
-if args.int_function == "random":
-	int_function = int_random
-elif args.int_function == "edges":
-	int_function = int_edges
-elif args.int_function == "waves":
-	int_function = int_waves
-elif args.int_function == "file":
-	int_function = int_file
-elif args.int_function == "file-edges":
-	int_function = int_file_edges
-elif args.int_function == "none":
-	int_function = int_none
-else:
+try:	
+	int_function = {
+		"random": int_random,
+		"edges": int_edges,
+		"waves": int_waves,
+		"file": int_file,
+		"file-edges": int_file_edges,
+		"none": int_none}[args.int_function]
+except KeyError:
 	print "Error! Invalid interval function."
 
 # Sorts the image
