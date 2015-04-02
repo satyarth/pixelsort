@@ -1,8 +1,6 @@
 from PIL import Image, ImageFilter
 import random
 import string
-import sys
-import math
 import argparse
 
 p = argparse.ArgumentParser(description="pixel mangle an image")
