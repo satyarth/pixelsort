@@ -3,19 +3,21 @@ import random
 import string
 import argparse
 
-p = argparse.ArgumentParser(description="pixel mangle an image")
-p.add_argument("image", help="input image file")
-p.add_argument("-o", "--output", help="output image file, defaults to a randomly generated string")
-p.add_argument("-i", "--int_function", help="random, edges, waves, file, none", default="random")
-p.add_argument("-f", "--int_file", help="image for intervals",default="in.png")
-p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
-p.add_argument("-c", "--clength", help="characteristic length",default=50)
-p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
+p = argparse.ArgumentParser(description = "pixel mangle an image")
+p.add_argument("image", help = "input image file")
+p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
+p.add_argument("-i", "--int_function", help = "random, edges, waves, file, none", default = "random")
+p.add_argument("-f", "--int_file", help = "image for intervals", default = "in.png")
+p.add_argument("-t", "--threshold", help = "between 0 and 255*3", default = 100)
+p.add_argument("-c", "--clength", help = "characteristic length", default = 50)
+p.add_argument("-a", "--angle", help = "rotate the image by an angle before sorting", default = 0)
+p.add_argument("-r", "--randomness", help = "what % of intervals are NOT sorted", default = 0)
 args = p.parse_args()
 
 randomness = int(args.randomness)
 threshold = int(args.threshold)
 clength = int(args.clength)
+angle = float(args.angle)
 
 print "Randomness =", randomness, "%"
 print "Threshold =", threshold
@@ -235,6 +237,7 @@ def pixel_sort():
 	print("Opening image...")
 	img = Image.open(args.image)
 	img.convert('RGBA')
+	img = img.rotate(angle, expand = True)
 
 	print("Getting data...")
 	data = img.load()
@@ -256,6 +259,7 @@ def pixel_sort():
 		for x in range(img.size[0]):
 			new.putpixel((x, y), sorted_pixels[y][x])
 
+	new = new.rotate(-angle)
 	print("Saving image...")
 	new.save(outputImage)
 	print "Done!", outputImage
