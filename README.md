@@ -28,8 +28,6 @@ python pixelsort.py %PathToImage% [options]
 
 * **`-f` (intervals file):** Image used to define intervals.
 
-* **`-m` (multichannel mode):** Whether or not to sort each channel separately. Activate by passing `y` (`n` by default).
-
 #### Interval Functions
 
 * `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
