@@ -197,7 +197,7 @@ def int_file_edges(pixels):
 def int_none(pixels):
 	intervals = []
 	for y in range(len(pixels)):
-		intervals.append([len(pixels[0])])
+		intervals.append([len(pixels[y])])
 	return(intervals)
 
 # Get function to define intervals from command line arguments
@@ -261,7 +261,7 @@ def sort_image(pixels, intervals):
 def pixel_sort():
 	print("Opening image...")
 	img = Image.open(args.image)
-	img = img.convert('RGBA')
+	img.convert('RGBA')
 
 	print("Getting data...")
 	data = img.load()
