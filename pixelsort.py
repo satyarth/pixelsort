@@ -32,9 +32,9 @@ def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase +
 	return ''.join(random.choice(chars) for _ in range(size))
 
 if args.output:
-    outputImage = args.output
+	outputImage = args.output
 else:
-    outputImage = id_generator()+".png"
+	outputImage = id_generator()+".png"
 
 # Sorts a given row of pixels, can handle individual channels as well
 def sort_interval(interval):
