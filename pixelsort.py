@@ -11,7 +11,6 @@ p.add_argument("-f", "--int_file", help="image for intervals",default="in.png")
 p.add_argument("-t", "--threshold", help="between 0 and 255*3",default=100)
 p.add_argument("-c", "--clength", help="characteristic length",default=50)
 p.add_argument("-r", "--randomness", help="what % of intervals are NOT sorted",default=0)
-p.add_argument("-m", "--multichannel", help="'y' enables multichannel mode",default='n')
 args = p.parse_args()
 
 randomness = int(args.randomness)
@@ -34,14 +33,12 @@ if args.output:
 else:
 	outputImage = id_generator()+".png"
 
-# Sorts a given row of pixels, can handle individual channels as well
+# Sorts a given row of pixels
 def sort_interval(interval):
 	if interval == []:
 		return []
-	elif isinstance(interval[0], tuple):
-		return(sorted(interval, key = lambda x: x[0] + x[1] + x[2]))
 	else:
-		return(sorted(interval, key = lambda x: x))
+		return(sorted(interval, key = lambda x: x[0] + x[1] + x[2]))
 
 # Generates random widths for intervals. Used by int_random()
 def random_width():
@@ -216,27 +213,6 @@ elif args.int_function == "none":
 else:
 	print "Error! Invalid interval function."
 
-# Sorts each channel separately
-def sort_image_multichannel(pixels, intervalses):
-	sorted_pixels = []
-	# Separate pixels into channels
-	channels = []
-	for channel in [0, 1, 2]:
-		channels.append([])
-		for y in range(len(pixels)):
-			channels[channel].append([])
-			for x in range(len(pixels[0])):
-				channels[channel][y].append(pixels[y][x][channel])
-
-	# sort the channels separately
-	for channel in [0, 1, 2]:
-		channels[channel] = sort_image(channels[channel],intervalses[channel])
-	for y in range(len(pixels)):
-		sorted_pixels.append([])
-		for x in range(len(pixels[0])):
-			sorted_pixels[y].append((channels[0][y][x], channels[1][y][x], channels[2][y][x], 255))
-	return(sorted_pixels)
-
 # Sorts the image
 def sort_image(pixels, intervals):
 	print("Sorting intervals...")
@@ -275,14 +251,8 @@ def pixel_sort():
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
 
-	if args.multichannel == 'y': # If multichannel mode is enabled
-		intervalses = []		 # intervalses: List of intervals
-		for channel in [0, 1, 2]:
-			intervalses.append(int_random(pixels))
-		sorted_pixels = sort_image_multichannel(pixels, intervalses)
-	else:
-		intervals = int_function(pixels)
-		sorted_pixels = sort_image(pixels, intervals)
+	intervals = int_function(pixels)
+	sorted_pixels = sort_image(pixels, intervals)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
