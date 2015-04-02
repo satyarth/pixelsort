@@ -26,6 +26,8 @@ python pixelsort.py %PathToImage% [options]
 
 * **`-c` (clength):** Characteristic length for the random width generator.
 
+* **`-a` (angle):** Angle at which you're pixel sorting. `0` (horizontal) by default.
+
 * **`-f` (intervals file):** Image used to define intervals.
 
 #### Interval Functions
