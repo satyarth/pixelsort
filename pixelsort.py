@@ -19,20 +19,6 @@ threshold = int(args.threshold)
 clength = int(args.clength)
 angle = float(args.angle)
 
-# Get function to define intervals from command line arguments
-try:	
-	int_function = {
-		"random": int_random,
-		"edges": int_edges,
-		"waves": int_waves,
-		"file": int_file,
-		"file-edges": int_file_edges,
-		"none": int_none}[args.int_function]
-except KeyError:
-	print "[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]"
-	int_function = int_random
-
-
 print "Randomness =", randomness, "%"
 print "Threshold =", threshold
 print "Characteristic length = ", clength
@@ -212,6 +198,19 @@ def int_none(pixels):
 	for y in range(len(pixels)):
 		intervals.append([len(pixels[y])])
 	return(intervals)
+
+# Get function to define intervals from command line arguments
+try:	
+	int_function = {
+		"random": int_random,
+		"edges": int_edges,
+		"waves": int_waves,
+		"file": int_file,
+		"file-edges": int_file_edges,
+		"none": int_none}[args.int_function]
+except KeyError:
+	print "[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]"
+	int_function = int_random
 
 # Sorts the image
 def sort_image(pixels, intervals):
