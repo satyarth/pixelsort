@@ -158,6 +158,7 @@ def int_file(pixels):
 
 def int_file_edges(pixels):
 	img = Image.open(args.int_file)
+	img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
 	edge_data = edges.load()
