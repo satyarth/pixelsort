@@ -12,7 +12,7 @@ The interval function (selected via command line, `random` by default) partition
 ```
 git clone https://github.com/satyarth/pixelsort.git
 cd pixelsort
-python pixelsort.py %PathToImage% [options]
+python3 pixelsort.py %PathToImage% [options]
 ```
 ####Parameters (Command Line):
 
@@ -34,31 +34,31 @@ python pixelsort.py %PathToImage% [options]
 
 * `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
 
-`python pixelsort.py examples/image.jpg -i random -c 20`
+`python3 pixelsort.py examples/image.jpg -i random -c 20`
 
 ![random](/examples/random.png)
 
 * `edges`: Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
 
-`python pixelsort.py examples/image.jpg -i edges -t 250`
+`python3 pixelsort.py examples/image.jpg -i edges -t 250`
 
 ![edges](/examples/edges.png)
 
 * `none`: Intervals = entire rows.
 
-`python pixelsort.py examples/image.jpg -i none`
+`python3 pixelsort.py examples/image.jpg -i none`
 
 ![none](/examples/none.png)
 
 * `waves`: Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
 
-`python pixelsort.py examples/image.jpg -i waves`
+`python3 pixelsort.py examples/image.jpg -i waves`
 
 ![none](/examples/waves.png)
 
 * `file`: Intervals taken from image specified with `-f`. Must be black and white and the same size as the input image.
 
-`python pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
+`python3 pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
 
 ![file](/examples/intervals.png)
 
