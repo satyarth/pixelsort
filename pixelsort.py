@@ -33,6 +33,9 @@ if args.output:
 else:
 	outputImage = id_generator()+".png"
 
+def intensity(pixel):
+	return pixel[0] + pixel[1] + pixel[2]
+
 # Sorts a given row of pixels
 def sort_interval(interval):
 	if interval == []:
@@ -86,6 +89,18 @@ def int_edges(pixels):
 		intervals.append([])
 		for x in range(len(pixels[0])):
 			if edge_pixels[y][x] == black_pixel:
+				intervals[y].append(x)
+		intervals[y].append(len(pixels[0]))
+	return(intervals)
+
+def int_threshold(pixels):
+	intervals = []
+
+	print("Defining intervals...")
+	for y in range(len(pixels)):
+		intervals.append([])
+		for x in range(len(pixels[0])):
+			if intensity(pixels[y][x]) < args.threshold:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
@@ -204,6 +219,7 @@ def int_none(pixels):
 try:	
 	int_function = {
 		"random": int_random,
+		"threshold": int_threshold,
 		"edges": int_edges,
 		"waves": int_waves,
 		"file": int_file,
