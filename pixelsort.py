@@ -5,6 +5,7 @@ except ImportError:
 import random
 import string
 import argparse
+from gooey import Gooey
 
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
@@ -216,8 +217,8 @@ def sort_image(pixels, intervals):
 		sorted_pixels.append(row)
 	return(sorted_pixels)
 
-if __name__ == "__main__":
-
+@Gooey
+def main():
 	p = argparse.ArgumentParser(description = "pixel mangle an image")
 	p.add_argument("image", help = "input image file")
 	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
@@ -282,3 +283,6 @@ if __name__ == "__main__":
 	print("Saving image...")
 	new.save(outputImage)
 	print("Done!", outputImage)
+
+if __name__ == "__main__":
+	main()
