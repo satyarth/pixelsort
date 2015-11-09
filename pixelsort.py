@@ -52,7 +52,7 @@ def random_width():
 	return(width)
 
 # Functions starting with int return intervals according to which to sort
-def int_edges(pixels):
+def int_edges(pixels, args):
 	img = Image.open(args.image)
 	img = img.rotate(args.angle, expand = True)
 	edges = img.filter(ImageFilter.FIND_EDGES)
@@ -93,7 +93,7 @@ def int_edges(pixels):
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
 
-def int_threshold(pixels):
+def int_threshold(pixels, args):
 	intervals = []
 
 	print("Defining intervals...")
@@ -122,7 +122,7 @@ def int_random(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
-def int_waves(pixels):
+def int_waves(pixels, args):
 	intervals = []
 
 	print("Defining intervals...")
@@ -139,7 +139,7 @@ def int_waves(pixels):
 				intervals[y].append(x)
 	return(intervals)
 
-def int_file(pixels):
+def int_file(pixels, args):
 	intervals = []
 	file_pixels = []
 
@@ -167,7 +167,7 @@ def int_file(pixels):
 
 	return intervals
 
-def int_file_edges(pixels):
+def int_file_edges(pixels, args):
 	img = Image.open(args.int_file)
 	img = img.rotate(args.angle, expand = True)
 	img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
@@ -209,7 +209,7 @@ def int_file_edges(pixels):
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
 
-def int_none(pixels):
+def int_none(pixels, args):
 	intervals = []
 	for y in range(len(pixels)):
 		intervals.append([len(pixels[y])])
@@ -268,7 +268,7 @@ def pixel_sort():
 		for x in range(img.size[0]):
 			pixels[y].append(data[x, y])
 
-	intervals = int_function(pixels)
+	intervals = int_function(pixels, args)
 	sorted_pixels = sort_image(pixels, intervals)
 
 	print("Placing pixels...")
