@@ -21,7 +21,7 @@ def sort_interval(interval):
 	if interval == []:
 		return []
 	else:
-		return(sorted(interval, key = lambda pixel: intensity(pixel)))
+		return(sorted(interval, key = intensity))
 
 # Generates random widths for intervals. Used by int_random()
 def random_width():
