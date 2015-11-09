@@ -6,32 +6,12 @@ import random
 import string
 import argparse
 
-p = argparse.ArgumentParser(description = "pixel mangle an image")
-p.add_argument("image", help = "input image file")
-p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
-p.add_argument("-i", "--int_function", help = "random, edges, waves, file, none", default = "random")
-p.add_argument("-f", "--int_file", help = "image for intervals", default = "in.png")
-p.add_argument("-t", "--threshold", type = int, help = "between 0 and 255*3", default = 100)
-p.add_argument("-c", "--clength", type = int, help = "characteristic length", default = 50)
-p.add_argument("-a", "--angle", type = float, help = "rotate the image by an angle before sorting", default = 0)
-p.add_argument("-r", "--randomness", type = float, help = "what % of intervals are NOT sorted", default = 0)
-args = p.parse_args()
-
-print("Randomness =", args.randomness, "%")
-print("Threshold =", args.threshold)
-print("Characteristic length = ", args.clength)
-
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
 
 # Generates names for output files
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
-
-if args.output:
-	outputImage = args.output
-else:
-	outputImage = id_generator()+".png"
 
 def intensity(pixel):
 	return pixel[0] + pixel[1] + pixel[2]
@@ -215,20 +195,6 @@ def int_none(pixels, args):
 		intervals.append([len(pixels[y])])
 	return(intervals)
 
-# Get function to define intervals from command line arguments
-try:	
-	int_function = {
-		"random": int_random,
-		"threshold": int_threshold,
-		"edges": int_edges,
-		"waves": int_waves,
-		"file": int_file,
-		"file-edges": int_file_edges,
-		"none": int_none}[args.int_function]
-except KeyError:
-	print("[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]")
-	int_function = int_random
-
 # Sorts the image
 def sort_image(pixels, intervals):
 	print("Sorting intervals...")
@@ -250,7 +216,43 @@ def sort_image(pixels, intervals):
 		sorted_pixels.append(row)
 	return(sorted_pixels)
 
-def pixel_sort():
+if __name__ == "__main__":
+
+	p = argparse.ArgumentParser(description = "pixel mangle an image")
+	p.add_argument("image", help = "input image file")
+	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
+	p.add_argument("-i", "--int_function", help = "random, edges, waves, file, none", default = "random")
+	p.add_argument("-f", "--int_file", help = "image for intervals", default = "in.png")
+	p.add_argument("-t", "--threshold", type = int, help = "between 0 and 255*3", default = 100)
+	p.add_argument("-c", "--clength", type = int, help = "characteristic length", default = 50)
+	p.add_argument("-a", "--angle", type = float, help = "rotate the image by an angle before sorting", default = 0)
+	p.add_argument("-r", "--randomness", type = float, help = "what % of intervals are NOT sorted", default = 0)
+	args = p.parse_args()
+
+	print("Randomness =", args.randomness, "%")
+	print("Threshold =", args.threshold)
+	print("Characteristic length = ", args.clength)
+
+	# Get function to define intervals from command line arguments
+	try:	
+		int_function = {
+			"random": int_random,
+			"threshold": int_threshold,
+			"edges": int_edges,
+			"waves": int_waves,
+			"file": int_file,
+			"file-edges": int_file_edges,
+			"none": int_none}[args.int_function]
+	except KeyError:
+		print("[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]")
+		int_function = int_random
+
+	# If given an output image name, use that. Else generate a random one
+	if args.output:
+		outputImage = args.output
+	else:
+		outputImage = id_generator()+".png"
+
 	print("Opening image...")
 	img = Image.open(args.image)
 	img.convert('RGBA')
@@ -280,5 +282,3 @@ def pixel_sort():
 	print("Saving image...")
 	new.save(outputImage)
 	print("Done!", outputImage)
-
-pixel_sort()
