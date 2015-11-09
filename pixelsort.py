@@ -11,20 +11,15 @@ p.add_argument("image", help = "input image file")
 p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
 p.add_argument("-i", "--int_function", help = "random, edges, waves, file, none", default = "random")
 p.add_argument("-f", "--int_file", help = "image for intervals", default = "in.png")
-p.add_argument("-t", "--threshold", help = "between 0 and 255*3", default = 100)
-p.add_argument("-c", "--clength", help = "characteristic length", default = 50)
-p.add_argument("-a", "--angle", help = "rotate the image by an angle before sorting", default = 0)
-p.add_argument("-r", "--randomness", help = "what % of intervals are NOT sorted", default = 0)
+p.add_argument("-t", "--threshold", type = int, help = "between 0 and 255*3", default = 100)
+p.add_argument("-c", "--clength", type = int, help = "characteristic length", default = 50)
+p.add_argument("-a", "--angle", type = float, help = "rotate the image by an angle before sorting", default = 0)
+p.add_argument("-r", "--randomness", type = float, help = "what % of intervals are NOT sorted", default = 0)
 args = p.parse_args()
 
-randomness = int(args.randomness)
-threshold = int(args.threshold)
-clength = int(args.clength)
-angle = float(args.angle)
-
-print("Randomness =", randomness, "%")
-print("Threshold =", threshold)
-print("Characteristic length = ", clength)
+print("Randomness =", args.randomness, "%")
+print("Threshold =", args.threshold)
+print("Characteristic length = ", args.clength)
 
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
@@ -49,14 +44,14 @@ def sort_interval(interval):
 def random_width():
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
-	width = int(clength*(1-x))
+	width = int(args.clength*(1-x))
 	# width = int(50/(x+0.1))
 	return(width)
 
 # Functions starting with int return intervals according to which to sort
 def int_edges(pixels):
 	img = Image.open(args.image)
-	img = img.rotate(angle, expand = True)
+	img = img.rotate(args.angle, expand = True)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
 	edge_data = edges.load()
@@ -75,7 +70,7 @@ def int_edges(pixels):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < threshold:
+			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -120,7 +115,7 @@ def int_waves(pixels):
 		intervals.append([])
 		x = 0
 		while True:
-			width = clength + random.randint(0,10)
+			width = args.clength + random.randint(0,10)
 			x += width
 			if x > len(pixels[0]):
 				intervals[y].append(len(pixels[0]))
@@ -159,7 +154,7 @@ def int_file(pixels):
 
 def int_file_edges(pixels):
 	img = Image.open(args.int_file)
-	img = img.rotate(angle, expand = True)
+	img = img.rotate(args.angle, expand = True)
 	img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
@@ -179,7 +174,7 @@ def int_file_edges(pixels):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < threshold:
+			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -230,7 +225,7 @@ def sort_image(pixels, intervals):
 			interval = []
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
-			if random.randint(0,100) >= randomness:
+			if random.randint(0,100) >= args.randomness:
 				row = row + sort_interval(interval)
 			else:
 				row = row + interval
@@ -243,7 +238,7 @@ def pixel_sort():
 	print("Opening image...")
 	img = Image.open(args.image)
 	img.convert('RGBA')
-	img = img.rotate(angle, expand = True)
+	img = img.rotate(args.angle, expand = True)
 
 	print("Getting data...")
 	data = img.load()
@@ -265,7 +260,7 @@ def pixel_sort():
 		for x in range(img.size[0]):
 			new.putpixel((x, y), sorted_pixels[y][x])
 
-	new = new.rotate(-angle)
+	new = new.rotate(-args.angle)
 	print("Saving image...")
 	new.save(outputImage)
 	print("Done!", outputImage)
