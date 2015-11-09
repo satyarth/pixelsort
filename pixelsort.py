@@ -56,6 +56,7 @@ def random_width():
 # Functions starting with int return intervals according to which to sort
 def int_edges(pixels):
 	img = Image.open(args.image)
+	img = img.rotate(angle, expand = True)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
 	edge_data = edges.load()
@@ -158,6 +159,7 @@ def int_file(pixels):
 
 def int_file_edges(pixels):
 	img = Image.open(args.int_file)
+	img = img.rotate(angle, expand = True)
 	img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
 	edges = img.filter(ImageFilter.FIND_EDGES)
 	edges = edges.convert('RGBA')
