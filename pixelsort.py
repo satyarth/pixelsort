@@ -85,7 +85,7 @@ def int_threshold(pixels, args):
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
 
-def int_random(pixels):
+def int_random(pixels, args):
 	intervals = []
 
 	print("Defining intervals...")
