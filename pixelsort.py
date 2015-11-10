@@ -80,7 +80,7 @@ def int_threshold(pixels, args):
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if intensity(pixels[y][x]) < args.threshold:
+			if intensity(pixels[y][x]) < args.threshold or intensity(pixels[y][x]) > args.upper_threshold:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
@@ -224,6 +224,7 @@ def main():
 	p.add_argument("-i", "--int_function", choices = ['random', 'edges', 'threshold', 'waves', 'file', 'file-edges', 'none'], help = "random, edges, waves, file, none", default = "random")
 	p.add_argument("-f", "--int_file", widget="FileChooser", help = "image for intervals", default = "in.png")
 	p.add_argument("-t", "--threshold", type = int, help = "between 0 and 255*3", default = 100)
+	p.add_argument("-u", "--upper_threshold", type = int, help = "between 0 and 255*3", default = 400)
 	p.add_argument("-c", "--clength", type = int, help = "characteristic length", default = 50)
 	p.add_argument("-a", "--angle", type = float, help = "rotate the image by an angle before sorting", default = 0)
 	p.add_argument("-r", "--randomness", type = float, help = "what % of intervals are NOT sorted", default = 0)
