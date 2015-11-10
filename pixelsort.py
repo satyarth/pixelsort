@@ -196,7 +196,7 @@ def int_none(pixels, args):
 	return(intervals)
 
 # Sorts the image
-def sort_image(pixels, intervals):
+def sort_image(pixels, intervals, args):
 	print("Sorting intervals...")
 	# Hold sorted pixels
 	sorted_pixels=[]
@@ -270,7 +270,7 @@ def main():
 			pixels[y].append(data[x, y])
 
 	intervals = int_function(pixels, args)
-	sorted_pixels = sort_image(pixels, intervals)
+	sorted_pixels = sort_image(pixels, intervals, args)
 
 	print("Placing pixels...")
 	for y in range(img.size[1]):
