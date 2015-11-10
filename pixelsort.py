@@ -216,6 +216,9 @@ def sort_image(pixels, intervals, args):
 		sorted_pixels.append(row)
 	return(sorted_pixels)
 
+nonbuffered_stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+sys.stdout = nonbuffered_stdout
+
 @Gooey
 def main():
 	p = GooeyParser(description = "pixel mangle an image")
