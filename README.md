@@ -40,29 +40,15 @@ Interval function 	| Description
 `waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
 `file`				| Intervals taken from another specified input image. Must be black and white.
 
-* `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+#### Examples
 
 `python3 pixelsort.py examples/image.jpg -i random -c 20`
 
 ![random](/examples/random.png)
 
-* `edges`: Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
-
 `python3 pixelsort.py examples/image.jpg -i edges -t 250`
 
 ![edges](/examples/edges.png)
-
-* `none`: Intervals = entire rows.
-
-`python3 pixelsort.py examples/image.jpg -i none`
-
-![none](/examples/none.png)
-
-* `waves`: Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
-
-`python3 pixelsort.py examples/image.jpg -i waves`
-
-![none](/examples/waves.png)
 
 * `file`: Intervals taken from image specified with `-f`. Must be black and white.
 
