@@ -24,10 +24,10 @@ def sort_interval(interval):
 		return(sorted(interval, key = intensity))
 
 # Generates random widths for intervals. Used by int_random()
-def random_width():
+def random_width(clength):
 	x = random.random()
 	# width = int(200*(1-(1-(x-1)**2)**0.5))
-	width = int(args.clength*(1-x))
+	width = int(clength*(1-x))
 	# width = int(50/(x+0.1))
 	return(width)
 
@@ -93,7 +93,7 @@ def int_random(pixels, args):
 		intervals.append([])
 		x = 0
 		while True:
-			width = random_width()
+			width = random_width(args.clength)
 			x += width
 			if x > len(pixels[0]):
 				intervals[y].append(len(pixels[0]))
