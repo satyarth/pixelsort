@@ -5,7 +5,7 @@ except ImportError:
 import random
 import string
 import argparse
-from gooey import Gooey
+from gooey import Gooey, GooeyParser
 
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
@@ -219,8 +219,8 @@ def sort_image(pixels, intervals, args):
 
 @Gooey
 def main():
-	p = argparse.ArgumentParser(description = "pixel mangle an image")
-	p.add_argument("image", help = "input image file")
+	p = GooeyParser(description = "pixel mangle an image")
+	p.add_argument("image", widget="FileChooser", help = "input image file")
 	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
 	p.add_argument("-i", "--int_function", help = "random, edges, waves, file, none", default = "random")
 	p.add_argument("-f", "--int_file", help = "image for intervals", default = "in.png")
