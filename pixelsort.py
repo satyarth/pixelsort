@@ -4,7 +4,6 @@ except ImportError:
 	from PIL import Image, ImageFilter
 import random
 import string
-import argparse
 from gooey import Gooey, GooeyParser
 
 black_pixel = (0, 0, 0, 255)
