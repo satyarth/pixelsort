@@ -32,6 +32,14 @@ python3 pixelsort.py %PathToImage% [options]
 
 #### Interval Functions
 
+Interval function 	| Description
+--------------------|------------
+`random`			| Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+`edges`				| Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
+`threshold`			| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
+`waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
+`file`				| Intervals taken from another specified input image. Must be black and white.
+
 * `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
 
 `python3 pixelsort.py examples/image.jpg -i random -c 20`
@@ -56,7 +64,7 @@ python3 pixelsort.py %PathToImage% [options]
 
 ![none](/examples/waves.png)
 
-* `file`: Intervals taken from image specified with `-f`. Must be black and white and the same size as the input image.
+* `file`: Intervals taken from image specified with `-f`. Must be black and white.
 
 `python3 pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
 
