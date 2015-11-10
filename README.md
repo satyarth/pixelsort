@@ -4,59 +4,50 @@
 
 Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pixelsorting](http://www.reddit.com/r/pixelsorting/top/)
 
-### How this program works:
-
-The interval function (selected via command line, `random` by default) partitions each row of the image into intervals and returns an array `intervals` that defines them. This array, along with the image (in RGB array form) are passed to `sort_image` which does the dirty work and returns an array of sorted pixels.
-
 ### Usage
+
+From the command line:
+
 ```
 git clone https://github.com/satyarth/pixelsort.git
 cd pixelsort
 python3 pixelsort.py %PathToImage% [options]
 ```
-####Parameters (Command Line):
 
-* **`-i` (interval function):** Controls how the intervals used for sorting are defined. 
+#### Parameters:
 
-* **`-o` (output file):** Path of output file. Randomly generates a file name by default.
-
-* **`-r` (randomness):** What % of intervals *not* to sort. 0 by default.
-
-* **`-t` (threshold):** Defines the threshold while performing edge detection. `100` by default.
-
-* **`-c` (clength):** Characteristic length for the random width generator.
-
-* **`-a` (angle):** Angle at which you're pixel sorting. `0` (horizontal) by default.
-
-* **`-f` (intervals file):** Image used to define intervals.
+Parameter 			| Flag 	| Description
+--------------------|-------|------------
+Interval function 	| `-i`	| Controls how the intervals used for sorting are defined. See below for more details and examples.
+Output file 		| `-o`	| Path of output file. Randomly generates a file name by default.
+Randomness 			| `-r`	| What percentage of intervals *not* to sort. 0 by default.
+Threshold (lower) 	| `-t`	| How dark must a pixel be to be considered as a 'border' for sorting? Takes values from 0-765. 100 by default. Used in `edges` and `threshold` modes.
+Threshold (upper) 	| `-u`	| How bright must a pixel be to be considered as a 'border' for sorting? Takes values from 0-765. 100 by default. Used in `threshold` mode.
+Char. length		| `-c`	| Characteristic length for the random width generator. Used in mode `random`.
+Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
+External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
 
 #### Interval Functions
 
-* `random`: Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+Interval function 	| Description
+--------------------|------------
+`random`			| Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+`edges`				| Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
+`threshold`			| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
+`waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
+`file`				| Intervals taken from another specified input image. Must be black and white.
+
+#### Examples
 
 `python3 pixelsort.py examples/image.jpg -i random -c 20`
 
 ![random](/examples/random.png)
 
-* `edges`: Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
-
 `python3 pixelsort.py examples/image.jpg -i edges -t 250`
 
 ![edges](/examples/edges.png)
 
-* `none`: Intervals = entire rows.
-
-`python3 pixelsort.py examples/image.jpg -i none`
-
-![none](/examples/none.png)
-
-* `waves`: Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
-
-`python3 pixelsort.py examples/image.jpg -i waves`
-
-![none](/examples/waves.png)
-
-* `file`: Intervals taken from image specified with `-f`. Must be black and white and the same size as the input image.
+* `file`: Intervals taken from image specified with `-f`. Must be black and white.
 
 `python3 pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
 

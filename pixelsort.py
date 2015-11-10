@@ -262,10 +262,10 @@ def main():
 	img = Image.open(args.image)
 	img.convert('RGBA')
 	img = img.rotate(args.angle, expand = True)
+	new = Image.new('RGBA', img.size)
 
 	print("Getting data...")
 	data = img.load()
-	new = Image.new('RGBA', img.size)
 
 	pixels = []
 
@@ -279,11 +279,11 @@ def main():
 	sorted_pixels = sort_image(pixels, intervals, args)
 
 	print("Placing pixels...")
-	for y in range(img.size[1]):
-		for x in range(img.size[0]):
+	for y in range(new.size[1]):
+		for x in range(new.size[0]):
 			new.putpixel((x, y), sorted_pixels[y][x])
 
-	new = new.rotate(-args.angle)
+	new = new.rotate(-args.angle, expand = True)
 	print("Saving image...")
 	new.save(outputImage)
 	print("Done!", outputImage)
