@@ -5,6 +5,7 @@ except ImportError:
 import random
 import string
 import argparse
+from colorsys import rgb_to_hsv
 
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
@@ -13,15 +14,16 @@ white_pixel = (255, 255, 255, 255)
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
-def intensity(pixel):
-	return pixel[0] + pixel[1] + pixel[2]
+def lightness(pixel):
+	return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2]
+	# return pixel[0] + pixel[1] + pixel[2]
 
 # Sorts a given row of pixels
 def sort_interval(interval):
 	if interval == []:
 		return []
 	else:
-		return(sorted(interval, key = intensity))
+		return(sorted(interval, key = lightness))
 
 # Generates random widths for intervals. Used by int_random()
 def random_width(clength):
