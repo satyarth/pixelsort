@@ -208,9 +208,9 @@ def sort_image(pixels, intervals, args):
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
 			if random.randint(0,100) >= args.randomness:
-				row = row + sort_interval(interval)
+				row += sort_interval(interval)
 			else:
-				row = row + interval
+				row += interval
 			xMin = xMax
 		row.append(pixels[y][0]) # wat
 		sorted_pixels.append(row)
