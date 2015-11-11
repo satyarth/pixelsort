@@ -14,8 +14,9 @@ white_pixel = (255, 255, 255, 255)
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
+# Returns a lightness value between 0 and 1
 def lightness(pixel):
-	return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2]
+	return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2]/255.0 # For backwards compatibility with python2
 
 # Sorts a given row of pixels
 def sort_interval(interval):
@@ -52,7 +53,7 @@ def int_edges(pixels, args):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
+			if lightness(filter_pixels[y][x]) < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -79,7 +80,7 @@ def int_threshold(pixels, args):
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if intensity(pixels[y][x]) < args.threshold or intensity(pixels[y][x]) > args.upper_threshold:
+			if lightness(pixels[y][x]) < args.threshold or lightness(pixels[y][x]) > args.upper_threshold:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
@@ -168,7 +169,7 @@ def int_file_edges(pixels, args):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
+			if lightness(filter_pixels[y][x]) < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -221,8 +222,8 @@ def main():
 	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
 	p.add_argument("-i", "--int_function", help = "random, threshold, edges, waves, file, file-edges, none", default = "threshold")
 	p.add_argument("-f", "--int_file", help = "Image used for defining intervals", default = "in.png")
-	p.add_argument("-t", "--threshold", type = int, help = "Pixels darker than this are not sorted, between 0 and 255*3", default = 100)
-	p.add_argument("-u", "--upper_threshold", type = int, help = "Pixels darker than this are not sorted, between 0 and 255*3", default = 400)
+	p.add_argument("-t", "--threshold", type = float, help = "Pixels darker than this are not sorted, between 0 and 1", default = 0.25)
+	p.add_argument("-u", "--upper_threshold", type = float, help = "Pixels darker than this are not sorted, between 0 and 1", default = 0.8)
 	p.add_argument("-c", "--clength", type = int, help = "Characteristic length of random intervals", default = 50)
 	p.add_argument("-a", "--angle", type = float, help = "Rotate the image by an angle (in degrees) before sorting", default = 0)
 	p.add_argument("-r", "--randomness", type = float, help = "What % of intervals are NOT sorted", default = 0)

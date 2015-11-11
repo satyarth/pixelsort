@@ -21,8 +21,8 @@ Parameter 			| Flag 	| Description
 Interval function 	| `-i`	| Controls how the intervals used for sorting are defined. See below for more details and examples.
 Output file 		| `-o`	| Path of output file. Randomly generates a file name by default.
 Randomness 			| `-r`	| What percentage of intervals *not* to sort. 0 by default.
-Threshold (lower) 	| `-t`	| How dark must a pixel be to be considered as a 'border' for sorting? Takes values from 0-765. 100 by default. Used in `edges` and `threshold` modes.
-Threshold (upper) 	| `-u`	| How bright must a pixel be to be considered as a 'border' for sorting? Takes values from 0-765. 100 by default. Used in `threshold` mode.
+Threshold (lower) 	| `-t`	| How dark must a pixel be to be considered as a 'border' for sorting? Takes values from 0-1. 0.25 by default. Used in `edges` and `threshold` modes.
+Threshold (upper) 	| `-u`	| How bright must a pixel be to be considered as a 'border' for sorting? Takes values from 0-1. 0.8 by default. Used in `threshold` mode.
 Char. length		| `-c`	| Characteristic length for the random width generator. Used in mode `random`.
 Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
 External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
