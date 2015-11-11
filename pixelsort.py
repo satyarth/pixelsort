@@ -231,7 +231,7 @@ def main():
 	p.add_argument("-u", "--upper_threshold", type = float, help = "Pixels darker than this are not sorted, between 0 and 1", default = 0.8)
 	p.add_argument("-c", "--clength", type = int, help = "Characteristic length of random intervals", default = 50)
 	p.add_argument("-a", "--angle", type = float, help = "Rotate the image by an angle (in degrees) before sorting", default = 0)
-	p.add_argument("-r", "--randomness", type = float, help = "What % of intervals are NOT sorted", default = 0)
+	p.add_argument("-r", "--randomness", type = float, help = "What percentage of intervals are NOT sorted", default = 0)
 
 	args = p.parse_args()
 
