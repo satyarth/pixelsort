@@ -16,7 +16,6 @@ def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase +
 
 def lightness(pixel):
 	return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2]
-	# return pixel[0] + pixel[1] + pixel[2]
 
 # Sorts a given row of pixels
 def sort_interval(interval):
@@ -28,9 +27,7 @@ def sort_interval(interval):
 # Generates random widths for intervals. Used by int_random()
 def random_width(clength):
 	x = random.random()
-	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(clength*(1-x))
-	# width = int(50/(x+0.1))
 	return(width)
 
 # Functions starting with int return intervals according to which to sort
@@ -222,7 +219,7 @@ def main():
 	p = argparse.ArgumentParser(description = "pixel mangle an image")
 	p.add_argument("image", help = "input image file")
 	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
-	p.add_argument("-i", "--int_function", help = "random, threshold, edges, waves, file, file-edges, none", default = "random")
+	p.add_argument("-i", "--int_function", help = "random, threshold, edges, waves, file, file-edges, none", default = "threshold")
 	p.add_argument("-f", "--int_file", help = "Image used for defining intervals", default = "in.png")
 	p.add_argument("-t", "--threshold", type = int, help = "Pixels darker than this are not sorted, between 0 and 255*3", default = 100)
 	p.add_argument("-u", "--upper_threshold", type = int, help = "Pixels darker than this are not sorted, between 0 and 255*3", default = 400)
@@ -246,14 +243,16 @@ def main():
 			"file-edges": int_file_edges,
 			"none": int_none}[args.int_function]
 	except KeyError:
-		print("[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]")
-		int_function = int_random
+		print("[WARNING] Invalid interval function specified, defaulting to 'threshold'.")
+		int_function = int_threshold
 
 	# If given an output image name, use that. Else generate a random one
 	if args.output:
 		outputImage = args.output
 	else:
 		outputImage = id_generator()+".png"
+
+	# Open the image and load RGB values into a list
 
 	print("Opening image...")
 	img = Image.open(args.image)
