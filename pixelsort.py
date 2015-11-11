@@ -5,6 +5,7 @@ except ImportError:
 import random
 import string
 from gooey import Gooey, GooeyParser
+from colorsys import rgb_to_hsv
 
 black_pixel = (0, 0, 0, 255)
 white_pixel = (255, 255, 255, 255)
@@ -13,22 +14,21 @@ white_pixel = (255, 255, 255, 255)
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
 	return ''.join(random.choice(chars) for _ in range(size))
 
-def intensity(pixel):
-	return pixel[0] + pixel[1] + pixel[2]
+# Returns a lightness value between 0 and 1
+def lightness(pixel):
+	return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2]/255.0 # For backwards compatibility with python2
 
 # Sorts a given row of pixels
 def sort_interval(interval):
 	if interval == []:
 		return []
 	else:
-		return(sorted(interval, key = intensity))
+		return(sorted(interval, key = lightness))
 
 # Generates random widths for intervals. Used by int_random()
 def random_width(clength):
 	x = random.random()
-	# width = int(200*(1-(1-(x-1)**2)**0.5))
 	width = int(clength*(1-x))
-	# width = int(50/(x+0.1))
 	return(width)
 
 # Functions starting with int return intervals according to which to sort
@@ -53,7 +53,7 @@ def int_edges(pixels, args):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
+			if lightness(filter_pixels[y][x]) < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -80,7 +80,7 @@ def int_threshold(pixels, args):
 	for y in range(len(pixels)):
 		intervals.append([])
 		for x in range(len(pixels[0])):
-			if intensity(pixels[y][x]) < args.threshold or intensity(pixels[y][x]) > args.upper_threshold:
+			if lightness(pixels[y][x]) < args.threshold or lightness(pixels[y][x]) > args.upper_threshold:
 				intervals[y].append(x)
 		intervals[y].append(len(pixels[0]))
 	return(intervals)
@@ -169,7 +169,7 @@ def int_file_edges(pixels, args):
 	for y in range(len(pixels)):
 		edge_pixels.append([])
 		for x in range(len(pixels[0])):
-			if filter_pixels[y][x][0] + filter_pixels[y][x][1] + filter_pixels[y][x][2] < args.threshold:
+			if lightness(filter_pixels[y][x]) < args.threshold:
 				edge_pixels[y].append(white_pixel)
 			else:
 				edge_pixels[y].append(black_pixel)
@@ -208,9 +208,9 @@ def sort_image(pixels, intervals, args):
 			for x in range(xMin, xMax):
 				interval.append(pixels[y][x])
 			if random.randint(0,100) >= args.randomness:
-				row = row + sort_interval(interval)
+				row += sort_interval(interval)
 			else:
-				row = row + interval
+				row += interval
 			xMin = xMax
 		row.append(pixels[y][0]) # wat
 		sorted_pixels.append(row)
@@ -224,19 +224,24 @@ def main():
 	p = GooeyParser(description = "pixel mangle an image")
 	p.add_argument("image", widget="FileChooser", help = "input image file")
 	p.add_argument("-o", "--output", help = "output image file, defaults to a randomly generated string")
-	p.add_argument("-i", "--int_function", choices = ['random', 'edges', 'threshold', 'waves', 'file', 'file-edges', 'none'], help = "What sort of intervals?", default = "random")
+	p.add_argument("-i", "--int_function", choices = ['random', 'edges', 'threshold', 'waves', 'file', 'file-edges', 'none'], help = "random, threshold, edges, waves, file, file-edges, none", default = "threshold")
 	p.add_argument("-f", "--int_file", widget="FileChooser", help = "Image used for defining intervals", default = "in.png")
-	p.add_argument("-t", "--threshold", type = int, help = "Pixels darker than this are not sorted, between 0 and 255*3", default = 100)
-	p.add_argument("-u", "--upper_threshold", type = int, help = "Pixels brighter than this are not sorted, between 0 and 255*3", default = 400)
+	p.add_argument("-t", "--threshold", type = float, help = "Pixels darker than this are not sorted, between 0 and 1", default = 0.25)
+	p.add_argument("-u", "--upper_threshold", type = float, help = "Pixels darker than this are not sorted, between 0 and 1", default = 0.8)
 	p.add_argument("-c", "--clength", type = int, help = "Characteristic length of random intervals", default = 50)
 	p.add_argument("-a", "--angle", type = float, help = "Rotate the image by an angle (in degrees) before sorting", default = 0)
 	p.add_argument("-r", "--randomness", type = float, help = "What % of intervals are NOT sorted", default = 0)
 
 	args = p.parse_args()
 
-	print("Randomness =", args.randomness, "%")
-	print("Threshold =", args.threshold)
-	print("Characteristic length = ", args.clength)
+	print("Interval function: ", args.int_function)
+	if args.int_function in ["threshold", "edges", "file-edges"]:
+		print("Lower threshold: ", args.threshold)
+	if args.int_function == "threshold":
+		print("Upper threshold: ", args.upper_threshold)
+	if args.int_function in ["random", "waves"]:
+		print("Characteristic length: ", args.clength)
+	print("Randomness: ", args.randomness, "%")
 
 	# Get function to define intervals from command line arguments
 	try:	
@@ -249,14 +254,16 @@ def main():
 			"file-edges": int_file_edges,
 			"none": int_none}[args.int_function]
 	except KeyError:
-		print("[WARNING] Invalid interval function specified, defaulting to 'random'. Try one of [random, edges, waves, file, none]")
-		int_function = int_random
+		print("[WARNING] Invalid interval function specified, defaulting to 'threshold'.")
+		int_function = int_threshold
 
 	# If given an output image name, use that. Else generate a random one
 	if args.output:
-		outputImage = args.output
+		output_image = args.output
 	else:
-		outputImage = id_generator()+".png"
+		output_image = id_generator()+".png"
+
+	# Open the image and load RGB values into a list
 
 	print("Opening image...")
 	img = Image.open(args.image)
@@ -285,8 +292,8 @@ def main():
 
 	new = new.rotate(-args.angle, expand = True)
 	print("Saving image...")
-	new.save(outputImage)
-	print("Done!", outputImage)
+	new.save(output_image)
+	print("Done!", output_image)
 
 if __name__ == "__main__":
 	main()
