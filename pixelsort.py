@@ -229,9 +229,14 @@ def main():
 	p.add_argument("-r", "--randomness", type = float, help = "What % of intervals are NOT sorted", default = 0)
 	args = p.parse_args()
 
-	print("Randomness =", args.randomness, "%")
-	print("Threshold =", args.threshold)
-	print("Characteristic length = ", args.clength)
+	print("Interval function: ", args.int_function)
+	if args.int_function in ["threshold", "edges", "file-edges"]:
+		print("Lower threshold: ", args.threshold)
+	if args.int_function == "threshold":
+		print("Upper threshold: ", args.upper_threshold)
+	if args.int_function in ["random", "waves"]:
+		print("Characteristic length: ", args.clength)
+	print("Randomness: ", args.randomness, "%")
 
 	# Get function to define intervals from command line arguments
 	try:	
@@ -249,9 +254,9 @@ def main():
 
 	# If given an output image name, use that. Else generate a random one
 	if args.output:
-		outputImage = args.output
+		output_image = args.output
 	else:
-		outputImage = id_generator()+".png"
+		output_image = id_generator()+".png"
 
 	# Open the image and load RGB values into a list
 
@@ -282,8 +287,8 @@ def main():
 
 	new = new.rotate(-args.angle, expand = True)
 	print("Saving image...")
-	new.save(outputImage)
-	print("Done!", outputImage)
+	new.save(output_image)
+	print("Done!", output_image)
 
 
 if __name__ == "__main__":
