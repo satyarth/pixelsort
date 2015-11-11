@@ -5,6 +5,7 @@ except ImportError:
 import random
 import string
 from gooey import Gooey, GooeyParser
+import os, sys
 from colorsys import rgb_to_hsv
 
 black_pixel = (0, 0, 0, 255)
