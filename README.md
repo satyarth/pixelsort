@@ -4,6 +4,12 @@
 
 Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pixelsorting](http://www.reddit.com/r/pixelsorting/top/)
 
+### Dependencies
+
+Tested with python3. Should work with python2 as well.
+
+Requires Pillow. `pip install Pillow` should work. If not, see [here](https://pillow.readthedocs.org/en/3.0.0/installation.html#linux-installation) for details.
+
 ### Usage
 
 From the command line:
@@ -12,6 +18,13 @@ From the command line:
 git clone https://github.com/satyarth/pixelsort.git
 cd pixelsort
 python3 pixelsort.py %PathToImage% [options]
+```
+
+Tip: To replicate Kim Asendorf's original [processing script](https://github.com/kimasendorf/ASDFPixelSort), first sort vertically and then horizontally in `threshold` (default) mode:
+
+```
+python3 pixelsort.py %PathToImage% -a 90
+python3 pixelsort.py %PathToSortedImage%
 ```
 
 #### Parameters:
