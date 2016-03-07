@@ -143,4 +143,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 ### Output images
-*.png
+/*.png
