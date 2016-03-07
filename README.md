@@ -10,6 +10,8 @@ Tested with python3. Should work with python2 as well.
 
 Requires Pillow. `pip install Pillow` should work. If not, see [here](https://pillow.readthedocs.org/en/3.0.0/installation.html#linux-installation) for details.
 
+There is also a requirements file which pretty much does the same via `pip install -r requirements.txt`.
+
 ### Usage
 
 From the command line:
