@@ -5,6 +5,7 @@ except ImportError:
     from PIL import Image, ImageFilter
 import sorter
 import argparams
+import util
 
 
 def main():
@@ -39,8 +40,12 @@ def main():
         for x in range(output_img.size[0]):
             output_img.putpixel((x, y), sorted_pixels[y][x])
 
-    print("Rotating output image back to original orientation...")
-    output_img = output_img.rotate(-argparams.angle, expand=True)
+    if argparams.angle is not 0:
+        print("Rotating output image back to original orientation...")
+        output_img = output_img.rotate(-argparams.angle, expand=True)
+
+        print("Crop image to apropriate size...")
+        output_img = util.crop_to(output_img, Image.open(argparams.image_input_path))
 
     print("Saving image...")
     output_img.save(argparams.output_image_path)
