@@ -39,6 +39,7 @@ Threshold (upper) 	| `-u`	| How bright must a pixel be to be considered as a 'bo
 Char. length		| `-c`	| Characteristic length for the random width generator. Used in mode `random`.
 Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
 External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
+Sorting function    | `-s`  | Sorting function to use for sorting the pixels.
 
 #### Interval Functions
 
@@ -49,6 +50,16 @@ Interval function 	| Description
 `threshold`			| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
 `waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
 `file`				| Intervals taken from another specified input image. Must be black and white.
+
+
+#### Sorting Functions
+
+Sorting function    | Description
+--------------------|------------
+`lightness`         | Sort by the lightness of a pixel according to a HSV representation.
+`intensity`         | Sort by the intensity of a pixel, i.e. the sum of all the RGB values.
+`maximum`           | Sort on the maximum RGB value of a pixel (either the R, G or B).
+`minimum`           | Sort on the minimum RGB value of a pixel (either the R, G or B).
 
 #### Examples
 

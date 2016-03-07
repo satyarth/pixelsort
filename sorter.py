@@ -1,5 +1,4 @@
 import random
-import util
 
 
 def sort_image(pixels, intervals, args):
@@ -12,7 +11,7 @@ def sort_image(pixels, intervals, args):
             for x in range(x_min, x_max):
                 interval.append(pixels[y][x])
             if random.randint(0, 100) >= args.randomness:
-                row += sort_interval(interval)
+                row += sort_interval(interval, args.sorting_function)
             else:
                 row += interval
             x_min = x_max
@@ -21,5 +20,5 @@ def sort_image(pixels, intervals, args):
     return sorted_pixels
 
 
-def sort_interval(interval):
-    return [] if interval == [] else sorted(interval, key=util.lightness)
+def sort_interval(interval, sorting_function):
+    return [] if interval == [] else sorted(interval, key=sorting_function)
