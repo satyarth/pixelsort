@@ -1,8 +1,7 @@
 try:
     import Image
-    import ImageFilter
 except ImportError:
-    from PIL import Image, ImageFilter
+    from PIL import Image
 import sorter
 import argparams
 import util
