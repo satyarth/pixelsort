@@ -129,7 +129,7 @@ def file_mask(pixels, args):
 
 
 def file_edges(pixels, args):
-    img = Image.open(args.int_file)
+    img = Image.open(args.interval_file_path)
     img = img.rotate(args.angle, expand=True)
     img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
     edges = img.filter(ImageFilter.FIND_EDGES)
@@ -150,7 +150,7 @@ def file_edges(pixels, args):
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[0])):
-            if util.lightness(filter_pixels[y][x]) < args.threshold:
+            if util.lightness(filter_pixels[y][x]) < args.bottom_threshold:
                 edge_pixels[y].append(constants.white_pixel)
             else:
                 edge_pixels[y].append(constants.black_pixel)
