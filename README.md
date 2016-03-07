@@ -86,7 +86,6 @@ Sorting function    | Description
 ### todo
 
 * Allow defining different intervals for different channels.
-* Sorting along arbitrary functions
 
 ---
 
