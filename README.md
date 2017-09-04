@@ -59,6 +59,7 @@ Interval function 	| Description
 Sorting function    | Description
 --------------------|------------
 `lightness`         | Sort by the lightness of a pixel according to a HSV representation.
+`hue`               | Sort by the hue of a pixel according to a HSV representation.
 `intensity`         | Sort by the intensity of a pixel, i.e. the sum of all the RGB values.
 `maximum`           | Sort on the maximum RGB value of a pixel (either the R, G or B).
 `minimum`           | Sort on the minimum RGB value of a pixel (either the R, G or B).
