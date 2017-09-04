@@ -11,6 +11,10 @@ def lightness(pixel):
     return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2] / 255.0  # For backwards compatibility with python2
 
 
+def hue(pixel):
+    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[0] / 255.0
+
+
 def random_width(clength):
     x = random.random()
     width = int(clength * (1 - x))
