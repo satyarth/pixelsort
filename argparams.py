@@ -29,8 +29,8 @@ def read_sorting_function():
             "lightness": sorting.lightness,
             "hue": sorting.hue,
             "intensity": sorting.intensity,
-            "maximum": sorting.maximum,
-            "minimum": sorting.minimum
+            "minimum": sorting.minimum,
+            "saturation": sorting.saturation
             }[__args.sorting_function]
     except KeyError:
         print("[WARNING] Invalid sorting function specified, defaulting to 'lightness'.")
@@ -47,7 +47,7 @@ p.add_argument("-u", "--upper_threshold", type=float, help="Pixels darker than t
 p.add_argument("-c", "--clength", type=int, help="Characteristic length of random intervals", default=50)
 p.add_argument("-a", "--angle", type=float, help="Rotate the image by an angle (in degrees) before sorting", default=0)
 p.add_argument("-r", "--randomness", type=float, help="What percentage of intervals are NOT sorted", default=0)
-p.add_argument("-s", "--sorting_function", help="lightness, intensity, hue, maximum, minimum", default="lightness")
+p.add_argument("-s", "--sorting_function", help="lightness, intensity, hue, saturation, minimum", default="lightness")
 __args = p.parse_args()
 
 image_input_path = __args.image
