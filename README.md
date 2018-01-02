@@ -52,6 +52,7 @@ Interval function 	| Description
 `threshold`			| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
 `waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
 `file`				| Intervals taken from another specified input image. Must be black and white.
+`none`				| Sort whole rows, only stopping at image borders.
 
 
 #### Sorting Functions
@@ -60,8 +61,8 @@ Sorting function    | Description
 --------------------|------------
 `lightness`         | Sort by the lightness of a pixel according to a HSV representation.
 `hue`               | Sort by the hue of a pixel according to a HSV representation.
+`saturation`        | Sort by the saturation of a pixel according to a HSV representation.
 `intensity`         | Sort by the intensity of a pixel, i.e. the sum of all the RGB values.
-`maximum`           | Sort on the maximum RGB value of a pixel (either the R, G or B).
 `minimum`           | Sort on the minimum RGB value of a pixel (either the R, G or B).
 
 #### Examples
