@@ -105,6 +105,7 @@ def file_mask(pixels, args):
 
     img = Image.open(args.interval_file_path)
     img = img.convert('RGBA')
+    img = img.rotate(args.angle, expand=True)
     data = img.load()
     for y in range(img.size[1]):
         file_pixels.append([])
