@@ -8,7 +8,8 @@ def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase +
 
 
 def lightness(pixel):
-    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2] / 255.0  # For backwards compatibility with python2
+    # For backwards compatibility with python2
+    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2] / 255.0
 
 
 def hue(pixel):
