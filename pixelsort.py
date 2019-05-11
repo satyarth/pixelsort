@@ -2,20 +2,22 @@ try:
     import Image
 except ImportError:
     from PIL import Image
-import sorter
-import argparams
+from sorter import sort_image
+from argparams import parse_args, verify_args
 import util
 
 
-def main():
+def main(args):
+    verify_args(args)
+
     print("Opening image...")
-    input_img = Image.open(argparams.image_input_path)
+    input_img = Image.open(args["image_input_path"])
 
     print("Converting to RGBA...")
     input_img.convert('RGBA')
 
     print("Rotating image...")
-    input_img = input_img.rotate(argparams.angle, expand=True)
+    input_img = input_img.rotate(args["angle"], expand=True)
 
     print("Getting data...")
     data = input_img.load()
@@ -28,10 +30,10 @@ def main():
             pixels[y].append(data[x, y])
 
     print("Determining intervals...")
-    intervals = argparams.interval_function(pixels, argparams)
+    intervals = args["interval_function"](pixels, args)
 
     print("Sorting pixels...")
-    sorted_pixels = sorter.sort_image(pixels, intervals, argparams)
+    sorted_pixels = sort_image(pixels, intervals, args["randomness"], args["sorting_function"])
 
     print("Placing pixels in output image...")
     output_img = Image.new('RGBA', input_img.size)
@@ -39,18 +41,19 @@ def main():
         for x in range(output_img.size[0]):
             output_img.putpixel((x, y), sorted_pixels[y][x])
 
-    if argparams.angle is not 0:
+    if args["angle"] is not 0:
         print("Rotating output image back to original orientation...")
-        output_img = output_img.rotate(-argparams.angle, expand=True)
+        output_img = output_img.rotate(-args["angle"], expand=True)
 
         print("Crop image to apropriate size...")
-        output_img = util.crop_to(output_img, Image.open(argparams.image_input_path))
+        output_img = util.crop_to(
+            output_img, Image.open(args["image_input_path"]))
 
     print("Saving image...")
-    output_img.save(argparams.output_image_path)
+    output_img.save(args["output_image_path"])
 
-    print("Done!", argparams.output_image_path)
+    print("Done!", args["output_image_path"])
 
 
 if __name__ == "__main__":
-    main()
+    main(parse_args())
