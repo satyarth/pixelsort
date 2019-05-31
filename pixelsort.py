@@ -54,8 +54,6 @@ def main(args):
     logging.debug("Saving image...")
     output_img.save(args["output_image_path"])
 
-    print(f"Done! {args['output_image_path']}")
-
 
 if __name__ == "__main__":
     main(parse_args())

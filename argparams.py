@@ -125,6 +125,9 @@ def verify_args(args):
     if args["interval_function"] in ["random", "waves"]:
         logging.info(f"Characteristic length: {args['clength']}")
     logging.info(f"Randomness: {args['randomness']}%")
+    if not args["output_image_path"]:
+        logging.warning(
+            f"No output path provided, defaulting to {util.id_generator()}.png")
 
     args["interval_function"] = read_interval_function(
         args["interval_function"])
