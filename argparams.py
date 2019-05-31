@@ -43,7 +43,7 @@ def parse_args():
     p.add_argument(
         "-o", "--output",
         help="output image file, defaults to a randomly generated string",
-        default=util.id_generator() + ".png"
+        default=None
     )
     p.add_argument(
         "-i", "--int_function",
@@ -86,15 +86,15 @@ def parse_args():
         default="lightness"
     )
     p.add_argument(
+        '-v', '--verbose',
+        help="Print more info",
+        action="store_const", dest="log_level", const=logging.INFO,
+    )
+    p.add_argument(
         '-d', '--debug',
         help="Print all debug statements",
         action="store_const", dest="log_level", const=logging.DEBUG,
         default=logging.WARNING,
-    )
-    p.add_argument(
-        '-v', '--verbose',
-        help="Print more info",
-        action="store_const", dest="log_level", const=logging.INFO,
     )
     __args = p.parse_args()
 
@@ -116,7 +116,7 @@ def parse_args():
 
 
 def verify_args(args):
-
+    # Informational logs
     logging.info(f"Interval function: {args['interval_function']}")
     if args["interval_function"] in ["threshold", "edges", "file-edges"]:
         logging.info(f"Lower threshold: {args['bottom_threshold']}")
@@ -125,10 +125,12 @@ def verify_args(args):
     if args["interval_function"] in ["random", "waves"]:
         logging.info(f"Characteristic length: {args['clength']}")
     logging.info(f"Randomness: {args['randomness']}%")
+    # Actual validation
     if not args["output_image_path"]:
+        output = f"{util.id_generator()}.png"
         logging.warning(
-            f"No output path provided, defaulting to {util.id_generator()}.png")
-
+            f"No output path provided, defaulting to {output}")
+        args["output_image_path"] = output
     args["interval_function"] = read_interval_function(
         args["interval_function"])
     args["sorting_function"] = read_sorting_function(args["sorting_function"])
