@@ -34,7 +34,8 @@ def main(args):
     intervals = args["interval_function"](pixels, args)
 
     logging.debug("Sorting pixels...")
-    sorted_pixels = sort_image(pixels, intervals, args["randomness"], args["sorting_function"])
+    sorted_pixels = sort_image(
+        pixels, intervals, args["randomness"], args["sorting_function"])
 
     logging.debug("Placing pixels in output image...")
     output_img = Image.new('RGBA', input_img.size)

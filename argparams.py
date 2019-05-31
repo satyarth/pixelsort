@@ -32,7 +32,8 @@ def read_sorting_function(sorting_function):
             "saturation": sorting.saturation
         }[sorting_function]
     except KeyError:
-        logging.warning("Invalid sorting function specified, defaulting to 'lightness'.")
+        logging.warning(
+            "Invalid sorting function specified, defaulting to 'lightness'.")
         return sorting.lightness
 
 
@@ -97,8 +98,9 @@ def parse_args():
     )
     __args = p.parse_args()
 
-    logging.basicConfig(format="%(name)s: %(levelname)s - %(message)s", level=__args.log_level)
-    
+    logging.basicConfig(
+        format="%(name)s: %(levelname)s - %(message)s", level=__args.log_level)
+
     return {
         "image_input_path": __args.image,
         "output_image_path": __args.output,
