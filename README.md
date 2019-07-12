@@ -51,7 +51,9 @@ Interval function 	| Description
 `edges`				| Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
 `threshold`			| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
 `waves`				| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
-`file`				| Intervals taken from another specified input image. Must be black and white.
+`file`				| Intervals taken from another specified input image. Must be black and white, and the same size as the input image.
+`file-edges`		| Intevals defined by performing edge detection on the file specified by `-f`. Must be the same size as the input image.
+`none`				| Sort whole rows, only stopping at image borders.
 
 
 #### Sorting Functions
@@ -59,8 +61,9 @@ Interval function 	| Description
 Sorting function    | Description
 --------------------|------------
 `lightness`         | Sort by the lightness of a pixel according to a HSV representation.
+`hue`               | Sort by the hue of a pixel according to a HSV representation.
+`saturation`        | Sort by the saturation of a pixel according to a HSV representation.
 `intensity`         | Sort by the intensity of a pixel, i.e. the sum of all the RGB values.
-`maximum`           | Sort on the maximum RGB value of a pixel (either the R, G or B).
 `minimum`           | Sort on the minimum RGB value of a pixel (either the R, G or B).
 
 #### Examples

@@ -9,8 +9,8 @@ import util
 
 
 def edge(pixels, args):
-    img = Image.open(args.image_input_path)
-    img = img.rotate(args.angle, expand=True)
+    img = Image.open(args["image_input_path"])
+    img = img.rotate(args["angle"], expand=True)
     edges = img.filter(ImageFilter.FIND_EDGES)
     edges = edges.convert('RGBA')
     edge_data = edges.load()
@@ -29,7 +29,7 @@ def edge(pixels, args):
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[0])):
-            if util.lightness(filter_pixels[y][x]) < args.bottom_threshold:
+            if util.lightness(filter_pixels[y][x]) < args["bottom_threshold"]:
                 edge_pixels[y].append(constants.white_pixel)
             else:
                 edge_pixels[y].append(constants.black_pixel)
@@ -57,7 +57,7 @@ def threshold(pixels, args):
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[0])):
-            if util.lightness(pixels[y][x]) < args.bottom_threshold or util.lightness(pixels[y][x]) > args.upper_threshold:
+            if util.lightness(pixels[y][x]) < args["bottom_threshold"] or util.lightness(pixels[y][x]) > args["upper_threshold"]:
                 intervals[y].append(x)
         intervals[y].append(len(pixels[0]))
     return intervals
@@ -71,7 +71,7 @@ def random(pixels, args):
         intervals.append([])
         x = 0
         while True:
-            width = util.random_width(args.clength)
+            width = util.random_width(args["clength"])
             x += width
             if x > len(pixels[0]):
                 intervals[y].append(len(pixels[0]))
@@ -89,7 +89,7 @@ def waves(pixels, args):
         intervals.append([])
         x = 0
         while True:
-            width = args.clength + rand.randint(0, 10)
+            width = args["clength"] + rand.randint(0, 10)
             x += width
             if x > len(pixels[0]):
                 intervals[y].append(len(pixels[0]))
@@ -103,8 +103,9 @@ def file_mask(pixels, args):
     intervals = []
     file_pixels = []
 
-    img = Image.open(args.interval_file_path)
+    img = Image.open(args["interval_file_path"])
     img = img.convert('RGBA')
+    img = img.rotate(args["angle"], expand=True)
     data = img.load()
     for y in range(img.size[1]):
         file_pixels.append([])
@@ -129,8 +130,8 @@ def file_mask(pixels, args):
 
 
 def file_edges(pixels, args):
-    img = Image.open(args.interval_file_path)
-    img = img.rotate(args.angle, expand=True)
+    img = Image.open(args["interval_file_path"])
+    img = img.rotate(args["angle"], expand=True)
     img = img.resize((len(pixels[0]), len(pixels)), Image.ANTIALIAS)
     edges = img.filter(ImageFilter.FIND_EDGES)
     edges = edges.convert('RGBA')
@@ -150,7 +151,7 @@ def file_edges(pixels, args):
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[0])):
-            if util.lightness(filter_pixels[y][x]) < args.bottom_threshold:
+            if util.lightness(filter_pixels[y][x]) < args["bottom_threshold"]:
                 edge_pixels[y].append(constants.white_pixel)
             else:
                 edge_pixels[y].append(constants.black_pixel)
