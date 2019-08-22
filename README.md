@@ -42,6 +42,7 @@ Char. length		| `-c`	| Characteristic length for the random width generator. Use
 Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
 External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
 Sorting function    | `-s`  | Sorting function to use for sorting the pixels.
+Mask    | `-m`  | Image used for masking parts of the image.
 
 #### Interval Functions
 
