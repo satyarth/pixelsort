@@ -32,6 +32,7 @@ def main(args):
 
     print("Determining intervals...")
     intervals = args["interval_function"](pixels, args)
+
     print("Sorting pixels...")
     sorted_pixels = sort_image(
         pixels, intervals, args["randomness"], args["sorting_function"])
