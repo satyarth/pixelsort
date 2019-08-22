@@ -5,6 +5,7 @@ except ImportError:
 from sorter import sort_image
 from argparams import parse_args, verify_args
 import util
+import constants
 
 
 def main(args):
@@ -22,12 +23,11 @@ def main(args):
     print("Getting data...")
     data = input_img.load()
 
+    print("Loading mask...")
+    mask = Image.open(args["mask"]).load() if args["mask"] else None
+
     print("Getting pixels...")
-    pixels = []
-    for y in range(input_img.size[1]):
-        pixels.append([])
-        for x in range(input_img.size[0]):
-            pixels[y].append(data[x, y])
+    pixels = get_pixels(data, mask, input_img.size)
 
     print("Determining intervals...")
     intervals = args["interval_function"](pixels, args)
@@ -36,10 +36,7 @@ def main(args):
     sorted_pixels = sort_image(pixels, intervals, args["randomness"], args["sorting_function"])
 
     print("Placing pixels in output image...")
-    output_img = Image.new('RGBA', input_img.size)
-    for y in range(output_img.size[1]):
-        for x in range(output_img.size[0]):
-            output_img.putpixel((x, y), sorted_pixels[y][x])
+    output_img = place_pixels(sorted_pixels, mask, data, input_img.size)
 
     if args["angle"] is not 0:
         print("Rotating output image back to original orientation...")
@@ -54,6 +51,26 @@ def main(args):
 
     print("Done!", args["output_image_path"])
 
+
+def get_pixels(data, mask, size):
+    pixels = []
+    for y in range(size[1]):
+        pixels.append([])
+        for x in range(size[0]):
+            if mask and mask[x, y] != constants.black_pixel:
+                pixels[y].append(data[x, y])
+    return pixels
+
+
+def place_pixels(pixels, mask, original, size):
+    output_img = Image.new('RGBA', size)
+    for y in range(size[1]):
+        for x in range(size[0]):
+            if mask and mask[x, y] != constants.black_pixel:
+                output_img.putpixel((x, y), pixels[y][x])
+            else:
+                output_img.putpixel((x, y), original[x, y])
+    return output_img
 
 if __name__ == "__main__":
     main(parse_args())
