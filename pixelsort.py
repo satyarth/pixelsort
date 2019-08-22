@@ -24,16 +24,17 @@ def main(args):
     data = input_img.load()
 
     print("Loading mask...")
-    mask = Image.open(args["mask"]).load() if args["mask"] else None
+    mask = Image.open(args["mask"]).convert(
+        'RGBA').load() if args["mask"] else None
 
     print("Getting pixels...")
     pixels = get_pixels(data, mask, input_img.size)
 
     print("Determining intervals...")
     intervals = args["interval_function"](pixels, args)
-
     print("Sorting pixels...")
-    sorted_pixels = sort_image(pixels, intervals, args["randomness"], args["sorting_function"])
+    sorted_pixels = sort_image(
+        pixels, intervals, args["randomness"], args["sorting_function"])
 
     print("Placing pixels in output image...")
     output_img = place_pixels(sorted_pixels, mask, data, input_img.size)
@@ -57,7 +58,7 @@ def get_pixels(data, mask, size):
     for y in range(size[1]):
         pixels.append([])
         for x in range(size[0]):
-            if mask and mask[x, y] != constants.black_pixel:
+            if not (mask and mask[x, y] == constants.black_pixel):
                 pixels[y].append(data[x, y])
     return pixels
 
@@ -65,12 +66,15 @@ def get_pixels(data, mask, size):
 def place_pixels(pixels, mask, original, size):
     output_img = Image.new('RGBA', size)
     for y in range(size[1]):
+        count = 0
         for x in range(size[0]):
-            if mask and mask[x, y] != constants.black_pixel:
-                output_img.putpixel((x, y), pixels[y][x])
-            else:
+            if mask and mask[x, y] == constants.black_pixel:
                 output_img.putpixel((x, y), original[x, y])
+            else:
+                output_img.putpixel((x, y), pixels[y][count])
+                count += 1
     return output_img
+
 
 if __name__ == "__main__":
     main(parse_args())
