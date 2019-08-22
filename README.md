@@ -87,6 +87,14 @@ Sorting function    | Description
 
 ![file](/examples/file.png)
 
+* `mask`: Mask taken from image specified with `-m`. Must be black and white.
+
+`python3 pixelsort.py examples/image.jpg -i random -c 20 -m examples/mask.png`
+
+![file](/examples/mask.png)
+
+![file](/examples/masked.png)
+
 ### todo
 
 * Allow defining different intervals for different channels.
