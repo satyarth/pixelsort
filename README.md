@@ -43,6 +43,7 @@ Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizont
 External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
 Sorting function    | `-s`  | Sorting function to use for sorting the pixels.
 Mask    | `-m`  | Image used for masking parts of the image.
+Logging Level    | `-l`  | Level of logging statements made visible. Choices include `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.
 
 #### Interval Functions
 

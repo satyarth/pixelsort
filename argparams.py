@@ -60,14 +60,13 @@ def parse_args():
                    help="lightness, intensity, hue, saturation, minimum", default="lightness")
     p.add_argument("-m", "--mask",
                    help="Image used for masking parts of the image")
-    p.add_argument('-v', '--verbose', action="store_const", dest="log_level", const=logging.INFO,
-        help="Print more info")
-    p.add_argument('-d', '--debug', action="store_const", dest="log_level", const=logging.DEBUG,
-        default=logging.WARNING, help="Print all debug statements")
+    p.add_argument("-l", "--log_level", default="WARNING", help="Print more or less info",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+
     __args = p.parse_args()
 
     logging.basicConfig(
-        format="%(name)s: %(levelname)s - %(message)s", level=__args.log_level)
+        format="%(name)s: %(levelname)s - %(message)s", level=logging.getLevelName(__args.log_level))
 
     return {
         "image_input_path": __args.image,
