@@ -56,6 +56,8 @@ def parse_args():
                    help="What percentage of intervals are NOT sorted", default=0)
     p.add_argument("-s", "--sorting_function",
                    help="lightness, intensity, hue, saturation, minimum", default="lightness")
+    p.add_argument("-m", "--mask",
+                   help="Image used for masking parts of the image")
     __args = p.parse_args()
 
     return {
@@ -68,7 +70,8 @@ def parse_args():
         "clength": __args.clength,
         "angle": __args.angle,
         "randomness": __args.randomness,
-        "sorting_function": __args.sorting_function
+        "sorting_function": __args.sorting_function,
+        "mask": __args.mask
     }
 
 

@@ -15,7 +15,6 @@ def sort_image(pixels, intervals, randomness, sorting_function):
             else:
                 row += interval
             x_min = x_max
-        row.append(pixels[y][0])
         sorted_pixels.append(row)
     return sorted_pixels
 
