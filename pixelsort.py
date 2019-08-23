@@ -6,52 +6,51 @@ from sorter import sort_image
 from argparams import parse_args, verify_args
 import util
 import constants
+import logging
 
 
 def main(args):
     verify_args(args)
 
-    print("Opening image...")
+    logging.debug("Opening image...")
     input_img = Image.open(args["image_input_path"])
 
-    print("Converting to RGBA...")
+    logging.debug("Converting to RGBA...")
     input_img.convert('RGBA')
 
-    print("Rotating image...")
+    logging.debug("Rotating image...")
     input_img = input_img.rotate(args["angle"], expand=True)
 
-    print("Getting data...")
+    logging.debug("Getting data...")
     data = input_img.load()
 
-    print("Loading mask...")
+    logging.debug("Loading mask...")
     mask = Image.open(args["mask"]).convert(
         'RGBA').load() if args["mask"] else None
 
-    print("Getting pixels...")
+    logging.debug("Getting pixels...")
     pixels = get_pixels(data, mask, input_img.size)
 
-    print("Determining intervals...")
+    logging.debug("Determining intervals...")
     intervals = args["interval_function"](pixels, args)
 
-    print("Sorting pixels...")
+    logging.debug("Sorting pixels...")
     sorted_pixels = sort_image(
         pixels, intervals, args["randomness"], args["sorting_function"])
 
-    print("Placing pixels in output image...")
+    logging.debug("Placing pixels in output image...")
     output_img = place_pixels(sorted_pixels, mask, data, input_img.size)
 
     if args["angle"] is not 0:
-        print("Rotating output image back to original orientation...")
+        logging.debug("Rotating output image back to original orientation...")
         output_img = output_img.rotate(-args["angle"], expand=True)
 
-        print("Crop image to apropriate size...")
+        logging.debug("Crop image to apropriate size...")
         output_img = util.crop_to(
             output_img, Image.open(args["image_input_path"]))
 
-    print("Saving image...")
+    logging.debug("Saving image...")
     output_img.save(args["output_image_path"])
-
-    print("Done!", args["output_image_path"])
 
 
 def get_pixels(data, mask, size):

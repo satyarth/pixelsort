@@ -6,8 +6,7 @@ except ImportError:
 import random as rand
 import constants
 import util
-
-# Interval functions
+import logging
 
 def edge(pixels, args):
     img = Image.open(args["image_input_path"])
@@ -20,13 +19,13 @@ def edge(pixels, args):
     edge_pixels = []
     intervals = []
 
-    print("Defining edges...")
+    logging.debug("Defining edges...")
     for y in range(img.size[1]):
         filter_pixels.append([])
         for x in range(img.size[0]):
             filter_pixels[y].append(edge_data[x, y])
 
-    print("Thresholding...")
+    logging.debug("Thresholding...")
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[y])):
@@ -35,13 +34,13 @@ def edge(pixels, args):
             else:
                 edge_pixels[y].append(constants.black_pixel)
 
-    print("Cleaning up edges...")
+    logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
             if edge_pixels[y][x] == constants.black_pixel and edge_pixels[y][x - 1] == constants.black_pixel:
                 edge_pixels[y][x] = constants.white_pixel
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
@@ -54,7 +53,7 @@ def edge(pixels, args):
 def threshold(pixels, args):
     intervals = []
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
@@ -67,7 +66,7 @@ def threshold(pixels, args):
 def random(pixels, args):
     intervals = []
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         x = 0
@@ -85,7 +84,7 @@ def random(pixels, args):
 def waves(pixels, args):
     intervals = []
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         x = 0
@@ -111,13 +110,13 @@ def file_mask(pixels, args):
         for x in range(img.size[0]):
             file_pixels[y].append(data[x, y])
 
-    print("Cleaning up edges...")
+    logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
             if file_pixels[y][x] == constants.black_pixel and file_pixels[y][x - 1] == constants.black_pixel:
                 file_pixels[y][x] = constants.white_pixel
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
@@ -138,13 +137,13 @@ def file_edges(pixels, args):
     edge_pixels = []
     intervals = []
 
-    print("Defining edges...")
+    logging.debug("Defining edges...")
     for y in range(img.size[1]):
         filter_pixels.append([])
         for x in range(img.size[0]):
             filter_pixels[y].append(edge_data[x, y])
 
-    print("Thresholding...")
+    logging.debug("Thresholding...")
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[y])):
@@ -153,13 +152,13 @@ def file_edges(pixels, args):
             else:
                 edge_pixels[y].append(constants.black_pixel)
 
-    print("Cleaning up edges...")
+    logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
             if edge_pixels[y][x] == constants.black_pixel and edge_pixels[y][x - 1] == constants.black_pixel:
                 edge_pixels[y][x] = constants.white_pixel
 
-    print("Defining intervals...")
+    logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):

@@ -2,6 +2,7 @@ import argparse
 import util
 import interval
 import sorting
+import logging
 
 
 def read_interval_function(int_function):
@@ -16,8 +17,8 @@ def read_interval_function(int_function):
             "none": interval.none
         }[int_function]
     except KeyError:
-        print(
-            "[WARNING] Invalid interval function specified, defaulting to 'threshold'.")
+        logging.warning(
+            "Invalid interval function specified, defaulting to 'threshold'.")
         return interval.threshold
 
 
@@ -31,7 +32,8 @@ def read_sorting_function(sorting_function):
             "saturation": sorting.saturation
         }[sorting_function]
     except KeyError:
-        print("[WARNING] Invalid sorting function specified, defaulting to 'lightness'.")
+        logging.warning(
+            "Invalid sorting function specified, defaulting to 'lightness'.")
         return sorting.lightness
 
 
@@ -58,7 +60,13 @@ def parse_args():
                    help="lightness, intensity, hue, saturation, minimum", default="lightness")
     p.add_argument("-m", "--mask",
                    help="Image used for masking parts of the image")
+    p.add_argument("-l", "--log_level", default="WARNING", help="Print more or less info",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+
     __args = p.parse_args()
+
+    logging.basicConfig(
+        format="%(name)s: %(levelname)s - %(message)s", level=logging.getLevelName(__args.log_level))
 
     return {
         "image_input_path": __args.image,
@@ -76,16 +84,21 @@ def parse_args():
 
 
 def verify_args(args):
-
-    print("Interval function: ", args["interval_function"])
+    # Informational logs
+    logging.info(f"Interval function: {args['interval_function']}")
     if args["interval_function"] in ["threshold", "edges", "file-edges"]:
-        print("Lower threshold: ", args["bottom_threshold"])
+        logging.info(f"Lower threshold: {args['bottom_threshold']}")
     if args["interval_function"] == "threshold":
-        print("Upper threshold: ", args["upper_threshold"])
+        logging.info(f"Upper threshold: {args['upper_threshold']}")
     if args["interval_function"] in ["random", "waves"]:
-        print("Characteristic length: ", args["clength"])
-    print("Randomness: ", args["randomness"], "%")
-
+        logging.info(f"Characteristic length: {args['clength']}")
+    logging.info(f"Randomness: {args['randomness']}%")
+    # Actual validation
+    if not args["output_image_path"]:
+        output = f"{util.id_generator()}.png"
+        logging.warning(
+            f"No output path provided, defaulting to {output}")
+        args["output_image_path"] = output
     args["interval_function"] = read_interval_function(
         args["interval_function"])
     args["sorting_function"] = read_sorting_function(args["sorting_function"])
