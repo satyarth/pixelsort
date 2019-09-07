@@ -1,12 +1,8 @@
-try:
-    import Image
-    import ImageFilter
-except ImportError:
-    from PIL import Image, ImageFilter
+import logging
 import random as rand
+from PIL import ImageFilter
 import constants
 import util
-import logging
 
 def edge(pixels, image, lower_threshold, **kwargs):
     edges = image.filter(ImageFilter.FIND_EDGES)

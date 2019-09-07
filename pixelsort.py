@@ -1,14 +1,14 @@
+import logging
 from PIL import Image
+import util
 from sorter import sort_image
 from argparams import parse_args
-import util
-import logging
 from constants import defaults, choices
 
 def pixelsort(
         image,
-        mask_image = None,
-        interval_image = None,
+        mask_image=None,
+        interval_image=None,
         randomness: float = defaults["randomness"],
         clength: int = defaults["clength"],
         sorting_function: str = defaults["sorting_function"],
@@ -28,11 +28,17 @@ def pixelsort(
     mask_data = None
     if mask_image:
         logging.debug("Loading mask...")
-        mask_data = mask_image.convert('RGBA').rotate(angle, expand=True).resize(image.size, Image.ANTIALIAS).load()
+        mask_data = (mask_image
+                     .convert('RGBA')
+                     .rotate(angle, expand=True)
+                     .resize(image.size, Image.ANTIALIAS).load())
 
     if interval_image:
         logging.debug("Loading interval image...")
-        interval_image.convert('RGBA').rotate(angle, expand=True).resize(image.size, Image.ANTIALIAS)
+        (interval_image
+         .convert('RGBA')
+         .rotate(angle, expand=True)
+         .resize(image.size, Image.ANTIALIAS))
 
     logging.debug("Getting pixels...")
     pixels = util.get_pixels(input_data, mask_data, image.size)
