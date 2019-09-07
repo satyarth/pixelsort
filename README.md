@@ -40,7 +40,7 @@ Threshold (lower) 	| `-t`	| How dark must a pixel be to be considered as a 'bord
 Threshold (upper) 	| `-u`	| How bright must a pixel be to be considered as a 'border' for sorting? Takes values from 0-1. 0.8 by default. Used in `threshold` mode.
 Char. length		| `-c`	| Characteristic length for the random width generator. Used in mode `random`.
 Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
-External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
+External interval file 	| `-f` 	| Image used to define intervals. Must be black and white.
 Sorting function    | `-s`  | Sorting function to use for sorting the pixels.
 Mask    | `-m`  | Image used for masking parts of the image.
 Logging Level    | `-l`  | Level of logging statements made visible. Choices include `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.

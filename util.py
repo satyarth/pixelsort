@@ -1,7 +1,8 @@
 import random
 import string
 from colorsys import rgb_to_hsv
-
+import constants
+from PIL import Image
 
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -43,3 +44,26 @@ def crop_to(image_to_crop, reference_image):
     right = dx / 2 + reference_size[0]
     lower = dy / 2 + reference_size[1]
     return image_to_crop.crop(box=(int(left), int(upper), int(right), int(lower)))
+
+
+def get_pixels(data, mask, size):
+    pixels = []
+    for y in range(size[1]):
+        pixels.append([])
+        for x in range(size[0]):
+            if not (mask and mask[x, y] == constants.black_pixel):
+                pixels[y].append(data[x, y])
+    return pixels
+
+
+def place_pixels(pixels, mask, original, size):
+    output_img = Image.new('RGBA', size)
+    for y in range(size[1]):
+        count = 0
+        for x in range(size[0]):
+            if mask and mask[x, y] == constants.black_pixel:
+                output_img.putpixel((x, y), original[x, y])
+            else:
+                output_img.putpixel((x, y), pixels[y][count])
+                count += 1
+    return output_img
