@@ -4,50 +4,51 @@ from constants import defaults, choices
 from util import id_generator
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Pixel mangle an image.")
-    p.add_argument("image", help="Input image file path.")
-    p.add_argument("-o", "--output", help="Output image file path, defaults to the time created.",
-                   default=id_generator() + ".png")
-    p.add_argument("-i", "--int_function",
-                   choices=choices["interval_function"].keys(),
-                   default=defaults["interval_function"],
-                   help="Function to determine sorting intervals")
-    p.add_argument("-f", "--int_file", help="Image used for defining intervals.")
-    p.add_argument("-t", "--threshold", type=float, default=defaults["lower_threshold"],
-                   help="Pixels darker than this are not sorted, between 0 and 1")
-    p.add_argument("-u", "--upper_threshold", type=float, default=defaults["upper_threshold"],
-                   help="Pixels brighter than this are not sorted, between 0 and 1")
-    p.add_argument("-c", "--clength", type=int, default=defaults["clength"],
-                   help="Characteristic length of random intervals")
-    p.add_argument("-a", "--angle", type=float, default=defaults["angle"],
-                   help="Rotate the image by an angle (in degrees) before sorting")
-    p.add_argument("-r", "--randomness", type=float, default=defaults["randomness"],
-                   help="What percentage of intervals are NOT sorted")
-    p.add_argument("-s", "--sorting_function",
-                   choices=choices["sorting_function"].keys(),
-                   default=defaults["sorting_function"],
-                   help="Function to sort pixels by.")
-    p.add_argument("-m", "--mask", help="Image used for masking parts of the image")
-    p.add_argument("-l", "--log_level", default="WARNING", help="Print more or less info",
-                   choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+    parser = argparse.ArgumentParser(description="Pixel mangle an image.")
+    parser.add_argument("image", help="Input image file path.")
+    parser.add_argument("-o", "--output",
+                        help="Output image file path, defaults to the time created.",
+                        default=id_generator() + ".png")
+    parser.add_argument("-i", "--int_function",
+                        choices=choices["interval_function"].keys(),
+                        default=defaults["interval_function"],
+                        help="Function to determine sorting intervals")
+    parser.add_argument("-f", "--int_file", help="Image used for defining intervals.")
+    parser.add_argument("-t", "--threshold", type=float, default=defaults["lower_threshold"],
+                        help="Pixels darker than this are not sorted, between 0 and 1")
+    parser.add_argument("-u", "--upper_threshold", type=float, default=defaults["upper_threshold"],
+                        help="Pixels brighter than this are not sorted, between 0 and 1")
+    parser.add_argument("-c", "--clength", type=int, default=defaults["clength"],
+                        help="Characteristic length of random intervals")
+    parser.add_argument("-a", "--angle", type=float, default=defaults["angle"],
+                        help="Rotate the image by an angle (in degrees) before sorting")
+    parser.add_argument("-r", "--randomness", type=float, default=defaults["randomness"],
+                        help="What percentage of intervals are NOT sorted")
+    parser.add_argument("-s", "--sorting_function",
+                        choices=choices["sorting_function"].keys(),
+                        default=defaults["sorting_function"],
+                        help="Function to sort pixels by.")
+    parser.add_argument("-m", "--mask", help="Image used for masking parts of the image")
+    parser.add_argument("-l", "--log_level", default="WARNING", help="Print more or less info",
+                        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
 
-    __args = p.parse_args()
+    _args = parser.parse_args()
 
     logging.basicConfig(
-        format="%(name)s: %(levelname)s - %(message)s", level=logging.getLevelName(__args.log_level))
+        format="%(name)s: %(levelname)s - %(message)s", level=logging.getLevelName(_args.log_level))
 
     return {
-        "image_input_path": __args.image,
-        "output_image_path": __args.output,
-        "interval_function": __args.int_function,
-        "interval_file_path": __args.int_file,
-        "lower_threshold": __args.threshold,
-        "upper_threshold": __args.upper_threshold,
-        "clength": __args.clength,
-        "angle": __args.angle,
-        "randomness": __args.randomness,
-        "sorting_function": __args.sorting_function,
-        "mask_path": __args.mask
+        "image_input_path": _args.image,
+        "output_image_path": _args.output,
+        "interval_function": _args.int_function,
+        "interval_file_path": _args.int_file,
+        "lower_threshold": _args.threshold,
+        "upper_threshold": _args.upper_threshold,
+        "clength": _args.clength,
+        "angle": _args.angle,
+        "randomness": _args.randomness,
+        "sorting_function": _args.sorting_function,
+        "mask_path": _args.mask
     }
 
 
