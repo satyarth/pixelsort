@@ -1,79 +1,93 @@
-try:
-    import Image
-except ImportError:
-    from PIL import Image
+from PIL import Image
 from sorter import sort_image
-from argparams import parse_args, verify_args
+from argparams import parse_args
 import util
-import constants
 import logging
+from constants import defaults, choices
+
+def pixelsort(
+        image,
+        mask_image = None,
+        interval_image = None,
+        randomness: float = defaults["randomness"],
+        clength: int = defaults["clength"],
+        sorting_function: str = defaults["sorting_function"],
+        interval_function: str = defaults["interval_function"],
+        lower_threshold: float = defaults["lower_threshold"],
+        upper_threshold: float = defaults["upper_threshold"],
+        angle: int = defaults["angle"]
+    ) -> Image.Image:
 
 
-def main(args):
-    verify_args(args)
-
-    logging.debug("Opening image...")
-    input_img = Image.open(args["image_input_path"])
-
-    logging.debug("Converting to RGBA...")
-    input_img.convert('RGBA')
-
-    logging.debug("Rotating image...")
-    input_img = input_img.rotate(args["angle"], expand=True)
+    logging.debug("Cleaning input image...")
+    image.convert('RGBA').rotate(angle, expand=True)
 
     logging.debug("Getting data...")
-    data = input_img.load()
+    input_data = image.load()
 
-    logging.debug("Loading mask...")
-    mask = Image.open(args["mask"]).convert('RGBA').rotate(args["angle"], expand=True).load() if args["mask"] else None
+    mask_data = None
+    if mask_image:
+        logging.debug("Loading mask...")
+        mask_data = mask_image.convert('RGBA').rotate(angle, expand=True).resize(image.size, Image.ANTIALIAS).load()
+
+    if interval_image:
+        logging.debug("Loading interval image...")
+        interval_image.convert('RGBA').rotate(angle, expand=True).resize(image.size, Image.ANTIALIAS)
 
     logging.debug("Getting pixels...")
-    pixels = get_pixels(data, mask, input_img.size)
+    pixels = util.get_pixels(input_data, mask_data, image.size)
 
     logging.debug("Determining intervals...")
-    intervals = args["interval_function"](pixels, args)
+    try:
+        interval_function = choices["interval_function"][interval_function]
+    except KeyError:
+        logging.warning("Invalid interval function specified, defaulting to 'threshold'.")
+        interval_function = choices["interval_function"]["threshold"]
+    intervals = interval_function(
+        pixels,
+        lower_threshold=lower_threshold,
+        upper_threshold=upper_threshold,
+        clength=clength,
+        interval_image=interval_image,
+        image=image
+    )
 
     logging.debug("Sorting pixels...")
-    sorted_pixels = sort_image(
-        pixels, intervals, args["randomness"], args["sorting_function"])
+    try:
+        sorting_function = choices["sorting_function"][sorting_function]
+    except KeyError:
+        logging.warning("Invalid sorting function specified, defaulting to 'lightness'.")
+        sorting_function = choices["sorting_function"]["lightness"]
+    sorted_pixels = sort_image(pixels, intervals, randomness, sorting_function)
 
     logging.debug("Placing pixels in output image...")
-    output_img = place_pixels(sorted_pixels, mask, data, input_img.size)
+    output_img = util.place_pixels(sorted_pixels, mask_data, input_data, image.size)
 
     if args["angle"] != 0:
         logging.debug("Rotating output image back to original orientation...")
-        output_img = output_img.rotate(-args["angle"], expand=True)
+        output_img = output_img.rotate(-angle, expand=True)
 
         logging.debug("Crop image to apropriate size...")
-        output_img = util.crop_to(
-            output_img, Image.open(args["image_input_path"]))
+        output_img = util.crop_to(output_img, image)
 
-    logging.debug("Saving image...")
-    output_img.save(args["output_image_path"])
-
-
-def get_pixels(data, mask, size):
-    pixels = []
-    for y in range(size[1]):
-        pixels.append([])
-        for x in range(size[0]):
-            if not (mask and mask[x, y] == constants.black_pixel):
-                pixels[y].append(data[x, y])
-    return pixels
-
-
-def place_pixels(pixels, mask, original, size):
-    output_img = Image.new('RGBA', size)
-    for y in range(size[1]):
-        count = 0
-        for x in range(size[0]):
-            if mask and mask[x, y] == constants.black_pixel:
-                output_img.putpixel((x, y), original[x, y])
-            else:
-                output_img.putpixel((x, y), pixels[y][count])
-                count += 1
     return output_img
 
 
+def _main(args):
+    output_path = args.pop("output_image_path")
+    logging.debug("Opening image...")
+    args["image"] = Image.open(args.pop("image_input_path"))
+    mask_path = args.pop("mask_path")
+    if mask_path:
+        logging.debug("Opening mask...")
+        args["mask_image"] = Image.open(mask_path)
+    interval_file_path = args.pop("interval_file_path")
+    if interval_file_path:
+        logging.debug("Opening interval image...")
+        args["interval_image"] = Image.open(interval_file_path)
+    output_img = pixelsort(**args)
+    logging.debug("Saving image...")
+    output_img.save(output_path)
+
 if __name__ == "__main__":
-    main(parse_args())
+    _main(parse_args())
