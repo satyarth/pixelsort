@@ -1,8 +1,20 @@
 import logging
-import random as rand
+from random import randint
 from PIL import ImageFilter
 from pixelsort.constants import black_pixel, white_pixel
 from pixelsort.util import lightness, random_width
+
+
+choices = {
+    "random": random,
+    "threshold": threshold,
+    "edges": edge,
+    "waves": waves,
+    "file": file_mask,
+    "file-edges": file_edges,
+    "none": none
+}
+
 
 def edge(pixels, image, lower_threshold, **kwargs):
     edges = image.filter(ImageFilter.FIND_EDGES)
@@ -83,7 +95,7 @@ def waves(pixels, clength, **kwargs):
         intervals.append([])
         x = 0
         while True:
-            width = clength + rand.randint(0, 10)
+            width = clength + randint(0, 10)
             x += width
             if x > len(pixels[y]):
                 intervals[y].append(len(pixels[y]))

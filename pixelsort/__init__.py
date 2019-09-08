@@ -1,1 +1,1 @@
-name = "pixelsort"
+NAME = "pixelsort"

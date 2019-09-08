@@ -1,6 +1,8 @@
 import argparse
 import logging
-from pixelsort.constants import defaults, choices
+from pixelsort.interval import choices as interval_choices
+from pixelsort.sorting import choices as sorting_choices
+from pixelsort.constants import defaults
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Pixel mangle an image.")
@@ -8,7 +10,7 @@ def parse_args():
     parser.add_argument("-o", "--output",
                         help="Output image file path, defaults to the time created.")
     parser.add_argument("-i", "--int_function",
-                        choices=choices["interval_function"].keys(),
+                        choices=interval_choices.keys(),
                         default=defaults["interval_function"],
                         help="Function to determine sorting intervals")
     parser.add_argument("-f", "--int_file", help="Image used for defining intervals.")
@@ -23,7 +25,7 @@ def parse_args():
     parser.add_argument("-r", "--randomness", type=float, default=defaults["randomness"],
                         help="What percentage of intervals are NOT sorted")
     parser.add_argument("-s", "--sorting_function",
-                        choices=choices["sorting_function"].keys(),
+                        choices=sorting_choices.keys(),
                         default=defaults["sorting_function"],
                         help="Function to sort pixels by.")
     parser.add_argument("-m", "--mask", help="Image used for masking parts of the image")
