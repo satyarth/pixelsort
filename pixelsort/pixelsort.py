@@ -1,9 +1,10 @@
 import logging
 from PIL import Image
-import util
-from sorter import sort_image
-from argparams import parse_args
-from constants import defaults, choices
+
+from pixelsort.util import get_pixels, place_pixels, id_generator, crop_to
+from pixelsort.sorter import sort_image
+from pixelsort.argparams import parse_args
+from pixelsort.constants import defaults, choices
 
 def pixelsort(
         image,
@@ -41,7 +42,7 @@ def pixelsort(
          .resize(image.size, Image.ANTIALIAS))
 
     logging.debug("Getting pixels...")
-    pixels = util.get_pixels(input_data, mask_data, image.size)
+    pixels = get_pixels(input_data, mask_data, image.size)
 
     logging.debug("Determining intervals...")
     try:
@@ -67,14 +68,14 @@ def pixelsort(
     sorted_pixels = sort_image(pixels, intervals, randomness, sorting_function)
 
     logging.debug("Placing pixels in output image...")
-    output_img = util.place_pixels(sorted_pixels, mask_data, input_data, image.size)
+    output_img = place_pixels(sorted_pixels, mask_data, input_data, image.size)
 
     if angle is not 0:
         logging.debug("Rotating output image back to original orientation...")
         output_img = output_img.rotate(-angle, expand=True)
 
         logging.debug("Crop image to apropriate size...")
-        output_img = util.crop_to(output_img, image)
+        output_img = crop_to(output_img, image)
 
     return output_img
 
@@ -93,7 +94,11 @@ def _main(args):
         args["interval_image"] = Image.open(interval_file_path)
     output_img = pixelsort(**args)
     logging.debug("Saving image...")
+    if not output_path:
+        output_path = id_generator() + ".png"
+        logging.warning(f"No output path provided, defaulting to {output_path}")
     output_img.save(output_path)
+
 
 if __name__ == "__main__":
     _main(parse_args())

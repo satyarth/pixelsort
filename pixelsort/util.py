@@ -2,7 +2,7 @@ import string
 from colorsys import rgb_to_hsv
 import random
 from PIL import Image
-import constants
+from pixelsort.constants import black_pixel
 
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -51,7 +51,7 @@ def get_pixels(data, mask, size):
     for y in range(size[1]):
         pixels.append([])
         for x in range(size[0]):
-            if not (mask and mask[x, y] == constants.black_pixel):
+            if not (mask and mask[x, y] == black_pixel):
                 pixels[y].append(data[x, y])
     return pixels
 
@@ -61,7 +61,7 @@ def place_pixels(pixels, mask, original, size):
     for y in range(size[1]):
         count = 0
         for x in range(size[0]):
-            if mask and mask[x, y] == constants.black_pixel:
+            if mask and mask[x, y] == black_pixel:
                 output_img.putpixel((x, y), original[x, y])
             else:
                 output_img.putpixel((x, y), pixels[y][count])
