@@ -1,10 +1,10 @@
 import logging
 from PIL import Image
 
-from pixelsort.util import get_pixels, place_pixels, id_generator, crop_to
+from pixelsort.util import id_generator, crop_to
 from pixelsort.sorter import sort_image
 from pixelsort.argparams import parse_args
-from pixelsort.constants import defaults, choices
+from pixelsort.constants import defaults, choices, black_pixel
 
 def pixelsort(
         image,
@@ -42,7 +42,7 @@ def pixelsort(
          .resize(image.size, Image.ANTIALIAS))
 
     logging.debug("Getting pixels...")
-    pixels = get_pixels(input_data, mask_data, image.size)
+    pixels = _get_pixels(input_data, mask_data, image.size)
 
     logging.debug("Determining intervals...")
     try:
@@ -68,7 +68,7 @@ def pixelsort(
     sorted_pixels = sort_image(pixels, intervals, randomness, sorting_function)
 
     logging.debug("Placing pixels in output image...")
-    output_img = place_pixels(sorted_pixels, mask_data, input_data, image.size)
+    output_img = _place_pixels(sorted_pixels, mask_data, input_data, image.size)
 
     if angle is not 0:
         logging.debug("Rotating output image back to original orientation...")
@@ -77,6 +77,29 @@ def pixelsort(
         logging.debug("Crop image to apropriate size...")
         output_img = crop_to(output_img, image)
 
+    return output_img
+
+
+def _get_pixels(data, mask, size):
+    pixels = []
+    for y in range(size[1]):
+        pixels.append([])
+        for x in range(size[0]):
+            if not (mask and mask[x, y] == black_pixel):
+                pixels[y].append(data[x, y])
+    return pixels
+
+
+def _place_pixels(pixels, mask, original, size):
+    output_img = Image.new('RGBA', size)
+    for y in range(size[1]):
+        count = 0
+        for x in range(size[0]):
+            if mask and mask[x, y] == black_pixel:
+                output_img.putpixel((x, y), original[x, y])
+            else:
+                output_img.putpixel((x, y), pixels[y][count])
+                count += 1
     return output_img
 
 

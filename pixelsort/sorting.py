@@ -1,6 +1,15 @@
 import pixelsort.util as util
 
 
+choices = {
+    "lightness": lightness,
+    "hue": hue,
+    "intensity": intensity,
+    "minimum": minimum,
+    "saturation": saturation
+}
+
+
 def lightness(pixel):
     return util.lightness(pixel)
 
