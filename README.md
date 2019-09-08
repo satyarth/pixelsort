@@ -17,16 +17,27 @@ There is also a requirements file which pretty much does the same via `pip insta
 From the command line:
 
 ```
-git clone https://github.com/satyarth/pixelsort.git
-cd pixelsort
-python3 pixelsort.py %PathToImage% [options]
+pip install pixelsort
+python3 -m pixelsort %PathToImage% [options]
 ```
 
 Tip: To replicate Kim Asendorf's original [processing script](https://github.com/kimasendorf/ASDFPixelSort), first sort vertically and then horizontally in `threshold` (default) mode:
 
 ```
-python3 pixelsort.py %PathToImage% -a 90
-python3 pixelsort.py %PathToSortedImage%
+python3 -m pixelsort %PathToImage% -a 90
+python3 -m pixelsort %PathToSortedImage%
+```
+
+As a package:
+
+```
+>>> from pixelsort.pixelsort import pixelsort
+>>> from PIL import Image
+>>> Image.open("examples/image.jpg")
+<PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=576x324 at 0x7F8F6A2AC208>
+>>> a = Image.open("examples/image.jpg")
+>>> pixelsort(a)
+<PIL.Image.Image image mode=RGBA size=576x324 at 0x7F8F66AA57B8>
 ```
 
 #### Parameters:
