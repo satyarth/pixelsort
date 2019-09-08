@@ -5,17 +5,6 @@ from pixelsort.constants import black_pixel, white_pixel
 from pixelsort.util import lightness, random_width
 
 
-choices = {
-    "random": random,
-    "threshold": threshold,
-    "edges": edge,
-    "waves": waves,
-    "file": file_mask,
-    "file-edges": file_edges,
-    "none": none
-}
-
-
 def edge(pixels, image, lower_threshold, **kwargs):
     edges = image.filter(ImageFilter.FIND_EDGES)
     edges = edges.convert('RGBA')
@@ -177,3 +166,14 @@ def none(pixels, **kwargs):
     for y in range(len(pixels)):
         intervals.append([len(pixels[y])])
     return intervals
+
+
+choices = {
+    "random": random,
+    "threshold": threshold,
+    "edges": edge,
+    "waves": waves,
+    "file": file_mask,
+    "file-edges": file_edges,
+    "none": none
+}
