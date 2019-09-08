@@ -1,8 +1,8 @@
 import logging
 import random as rand
 from PIL import ImageFilter
-import constants
-import util
+from pixelsort.constants import black_pixel, white_pixel
+from pixelsort.util import lightness, random_width
 
 def edge(pixels, image, lower_threshold, **kwargs):
     edges = image.filter(ImageFilter.FIND_EDGES)
@@ -23,22 +23,22 @@ def edge(pixels, image, lower_threshold, **kwargs):
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[y])):
-            if util.lightness(filter_pixels[y][x]) < lower_threshold:
-                edge_pixels[y].append(constants.white_pixel)
+            if lightness(filter_pixels[y][x]) < lower_threshold:
+                edge_pixels[y].append(white_pixel)
             else:
-                edge_pixels[y].append(constants.black_pixel)
+                edge_pixels[y].append(black_pixel)
 
     logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
-            if edge_pixels[y][x] == constants.black_pixel and edge_pixels[y][x - 1] == constants.black_pixel:
-                edge_pixels[y][x] = constants.white_pixel
+            if edge_pixels[y][x] == black_pixel and edge_pixels[y][x - 1] == black_pixel:
+                edge_pixels[y][x] = white_pixel
 
     logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
-            if edge_pixels[y][x] == constants.black_pixel:
+            if edge_pixels[y][x] == black_pixel:
                 intervals[y].append(x)
         intervals[y].append(len(pixels[y]))
     return intervals
@@ -51,7 +51,7 @@ def threshold(pixels, lower_threshold, upper_threshold, **kwargs):
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
-            if util.lightness(pixels[y][x]) < lower_threshold or util.lightness(pixels[y][x]) > upper_threshold:
+            if lightness(pixels[y][x]) < lower_threshold or lightness(pixels[y][x]) > upper_threshold:
                 intervals[y].append(x)
         intervals[y].append(len(pixels[y]))
     return intervals
@@ -65,7 +65,7 @@ def random(pixels, clength, **kwargs):
         intervals.append([])
         x = 0
         while True:
-            width = util.random_width(clength)
+            width = random_width(clength)
             x += width
             if x > len(pixels[y]):
                 intervals[y].append(len(pixels[y]))
@@ -106,14 +106,14 @@ def file_mask(pixels, interval_image, **kwargs):
     logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
-            if file_pixels[y][x] == constants.black_pixel and file_pixels[y][x - 1] == constants.black_pixel:
-                file_pixels[y][x] = constants.white_pixel
+            if file_pixels[y][x] == black_pixel and file_pixels[y][x - 1] == black_pixel:
+                file_pixels[y][x] = white_pixel
 
     logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
-            if file_pixels[y][x] == constants.black_pixel:
+            if file_pixels[y][x] == black_pixel:
                 intervals[y].append(x)
         intervals[y].append(len(pixels[y]))
 
@@ -139,22 +139,22 @@ def file_edges(pixels, interval_image, lower_threshold, **kwargs):
     for y in range(len(pixels)):
         edge_pixels.append([])
         for x in range(len(pixels[y])):
-            if util.lightness(filter_pixels[y][x]) < lower_threshold:
-                edge_pixels[y].append(constants.white_pixel)
+            if lightness(filter_pixels[y][x]) < lower_threshold:
+                edge_pixels[y].append(white_pixel)
             else:
-                edge_pixels[y].append(constants.black_pixel)
+                edge_pixels[y].append(black_pixel)
 
     logging.debug("Cleaning up edges...")
     for y in range(len(pixels) - 1, 1, -1):
         for x in range(len(pixels[y]) - 1, 1, -1):
-            if edge_pixels[y][x] == constants.black_pixel and edge_pixels[y][x - 1] == constants.black_pixel:
-                edge_pixels[y][x] = constants.white_pixel
+            if edge_pixels[y][x] == black_pixel and edge_pixels[y][x - 1] == black_pixel:
+                edge_pixels[y][x] = white_pixel
 
     logging.debug("Defining intervals...")
     for y in range(len(pixels)):
         intervals.append([])
         for x in range(len(pixels[y])):
-            if edge_pixels[y][x] == constants.black_pixel:
+            if edge_pixels[y][x] == black_pixel:
                 intervals[y].append(x)
         intervals[y].append(len(pixels[y]))
     return intervals
