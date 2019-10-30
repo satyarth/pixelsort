@@ -6,7 +6,7 @@ Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pi
 
 ### Dependencies
 
-Tested with python3. Should work with python2 as well.
+Python 3.6 or greater.
 
 Requires Pillow. `pip install Pillow` should work. If not, see [here](https://pillow.readthedocs.org/en/3.0.0/installation.html#linux-installation) for details.
 
@@ -42,6 +42,8 @@ Char. length		| `-c`	| Characteristic length for the random width generator. Use
 Angle 				| `-a`	| Angle at which you're pixel sorting in degrees. `0` (horizontal) by default.
 External int file 	| `-f` 	| Image used to define intervals. Must be black and white.
 Sorting function    | `-s`  | Sorting function to use for sorting the pixels.
+Mask    | `-m`  | Image used for masking parts of the image.
+Logging Level    | `-l`  | Level of logging statements made visible. Choices include `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`.
 
 #### Interval Functions
 
@@ -85,6 +87,14 @@ Sorting function    | Description
 (generated with [elementary-ca](https://github.com/satyarth/elementary-ca))
 
 ![file](/examples/file.png)
+
+* `mask`: Mask taken from image specified with `-m`. Must be black and white.
+
+`python3 pixelsort.py examples/image.jpg -i random -c 20 -m examples/mask.png`
+
+![file](/examples/mask.png)
+
+![file](/examples/masked.png)
 
 ### todo
 
