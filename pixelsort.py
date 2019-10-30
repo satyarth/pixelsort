@@ -25,8 +25,7 @@ def main(args):
     data = input_img.load()
 
     logging.debug("Loading mask...")
-    mask = Image.open(args["mask"]).convert(
-        'RGBA').load() if args["mask"] else None
+    mask = Image.open(args["mask"]).convert('RGBA').rotate(args["angle"], expand=True).load() if args["mask"] else None
 
     logging.debug("Getting pixels...")
     pixels = get_pixels(data, mask, input_img.size)
