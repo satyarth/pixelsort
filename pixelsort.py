@@ -40,7 +40,7 @@ def main(args):
     logging.debug("Placing pixels in output image...")
     output_img = place_pixels(sorted_pixels, mask, data, input_img.size)
 
-    if args["angle"] is not 0:
+    if args["angle"] != 0:
         logging.debug("Rotating output image back to original orientation...")
         output_img = output_img.rotate(-args["angle"], expand=True)
 
