@@ -72,7 +72,7 @@ def pixelsort(
     logging.debug("Placing pixels in output image...")
     output_img = _place_pixels(sorted_pixels, mask_data, input_data, image.size)
 
-    if angle is not 0:
+    if angle != 0:
         logging.debug("Rotating output image back to original orientation...")
         output_img = output_img.rotate(-angle, expand=True)
 
