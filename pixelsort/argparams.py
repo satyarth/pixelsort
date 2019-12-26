@@ -4,6 +4,7 @@ from pixelsort.interval import choices as interval_choices
 from pixelsort.sorting import choices as sorting_choices
 from pixelsort.constants import DEFAULTS
 
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Pixel mangle an image.")
     parser.add_argument("image", help="Input image file path.")
@@ -13,7 +14,8 @@ def parse_args():
                         choices=interval_choices.keys(),
                         default=DEFAULTS["interval_function"],
                         help="Function to determine sorting intervals")
-    parser.add_argument("-f", "--int_file", help="Image used for defining intervals.")
+    parser.add_argument("-f", "--int_file",
+                        help="Image used for defining intervals.")
     parser.add_argument("-t", "--threshold", type=float, default=DEFAULTS["lower_threshold"],
                         help="Pixels darker than this are not sorted, between 0 and 1")
     parser.add_argument("-u", "--upper_threshold", type=float, default=DEFAULTS["upper_threshold"],
@@ -28,7 +30,8 @@ def parse_args():
                         choices=sorting_choices.keys(),
                         default=DEFAULTS["sorting_function"],
                         help="Function to sort pixels by.")
-    parser.add_argument("-m", "--mask", help="Image used for masking parts of the image")
+    parser.add_argument(
+        "-m", "--mask", help="Image used for masking parts of the image")
     parser.add_argument("-l", "--log_level", default="WARNING", help="Print more or less info",
                         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
 
