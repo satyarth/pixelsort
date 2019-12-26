@@ -6,11 +6,7 @@ Have a look at [this post](http://satyarth.me/articles/pixel-sorting/) or [/r/pi
 
 ### Dependencies
 
-Python 3.6 or greater.
-
-Requires Pillow. `pip install Pillow` should work. If not, see [here](https://pillow.readthedocs.org/en/3.0.0/installation.html#linux-installation) for details.
-
-There is also a requirements file which pretty much does the same via `pip install -r requirements.txt`.
+Should work in both Python 2 and 3, but Python 3 is recommended.
 
 ### Usage
 
@@ -31,11 +27,11 @@ python3 -m pixelsort %PathToSortedImage%
 As a package:
 
 ```
->>> from pixelsort.pixelsort import pixelsort
+>>> from pixelsort import pixelsort
 >>> from PIL import Image
->>> Image.open("examples/image.jpg")
-<PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=576x324 at 0x7F8F6A2AC208>
 >>> a = Image.open("examples/image.jpg")
+>>> a
+<PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=576x324 at 0x7F8F6A2AC208>
 >>> pixelsort(a)
 <PIL.Image.Image image mode=RGBA size=576x324 at 0x7F8F66AA57B8>
 ```
@@ -81,17 +77,17 @@ Sorting function    | Description
 
 #### Examples
 
-`python3 pixelsort.py examples/image.jpg -i random -c 20`
+`python3 -m pixelsort examples/image.jpg -i random -c 20`
 
 ![random](/examples/random.png)
 
-`python3 pixelsort.py examples/image.jpg -i edges -t 250`
+`python3 -m pixelsort examples/image.jpg -i edges -t 250`
 
 ![edges](/examples/edges.png)
 
 * `file`: Intervals taken from image specified with `-f`. Must be black and white.
 
-`python3 pixelsort.py examples/image.jpg -i file -f examples/intervals.png `
+`python3 -m pixelsort examples/image.jpg -i file -f examples/intervals.png `
 
 ![file](/examples/intervals.png)
 
@@ -101,13 +97,13 @@ Sorting function    | Description
 
 * `mask`: Mask taken from image specified with `-m`. Must be black and white.
 
-`python3 pixelsort.py examples/image.jpg -i random -c 20 -m examples/mask.png`
+`python3 -m pixelsort examples/image.jpg -i random -c 20 -m examples/mask.png`
 
 ![file](/examples/mask.png)
 
 ![file](/examples/masked.png)
 
-### todo
+### Todo
 
 * Allow defining different intervals for different channels.
 

@@ -1,6 +1,5 @@
 import pixelsort.util as util
 
-
 def lightness(pixel):
     return util.lightness(pixel)
 

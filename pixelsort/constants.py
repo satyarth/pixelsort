@@ -1,6 +1,6 @@
-black_pixel = (0, 0, 0, 255)
-white_pixel = (255, 255, 255, 255)
-defaults = {
+BLACK_PIXEL = (0, 0, 0, 255)
+WHITE_PIXEL = (255, 255, 255, 255)
+DEFAULTS = {
     "interval_function": "threshold",
     "lower_threshold": 0.25,
     "upper_threshold": 0.8,
