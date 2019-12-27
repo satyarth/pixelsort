@@ -22,7 +22,8 @@ def pixelsort(
 ):
 
     logging.debug("Cleaning input image...")
-    image.convert('RGBA').rotate(angle, expand=True)
+    original = image
+    image = image.convert('RGBA').rotate(angle, expand=True)
 
     logging.debug("Getting data...")
     input_data = image.load()
@@ -78,8 +79,8 @@ def pixelsort(
         logging.debug("Rotating output image back to original orientation...")
         output_img = output_img.rotate(-angle, expand=True)
 
-        logging.debug("Crop image to apropriate size...")
-        output_img = crop_to(output_img, image)
+        logging.debug("Crop image to appropriate size...")
+        output_img = crop_to(output_img, original)
 
     return output_img
 
