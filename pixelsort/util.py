@@ -1,6 +1,6 @@
-import random
 import string
 from colorsys import rgb_to_hsv
+import random
 
 
 def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
