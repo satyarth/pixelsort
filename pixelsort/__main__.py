@@ -21,7 +21,7 @@ if mask_path:
     args["mask_image"] = Image.open(mask_path)
 if interval_file_path:
     logging.debug("Opening interval file...")
-    args["interval_file"] = Image.open(interval_file_path)
+    args["interval_image"] = Image.open(interval_file_path)
 
 logging.debug("Saving image...")
 pixelsort(**args).save(image_output_path)
