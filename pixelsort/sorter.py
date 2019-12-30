@@ -10,10 +10,10 @@ def sort_image(pixels, intervals, randomness, sorting_function):
             interval = []
             for x in range(x_min, x_max):
                 interval.append(pixels[y][x])
-            if random.randint(0, 100) > randomness:
-                row += sort_interval(interval, sorting_function)
-            else:
+            if random.random() < randomness / 100:
                 row += interval
+            else:
+                row += sort_interval(interval, sorting_function)
             x_min = x_max
         sorted_pixels.append(row)
     return sorted_pixels

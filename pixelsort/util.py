@@ -1,10 +1,11 @@
 import string
 from colorsys import rgb_to_hsv
 import random
+import time
 
-
-def id_generator(size=5, chars=string.ascii_lowercase + string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+def id_generator():
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    return timestr
 
 
 def lightness(pixel):

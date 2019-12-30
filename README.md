@@ -109,4 +109,4 @@ Sorting function    | Description
 
 ---
 
-Based on https://gist.github.com/LycaonIsAWolf/667c5554e5d9d9a25ae6
+Based on https://gist.github.com/prophetgoddess/667c5554e5d9d9a25ae6
