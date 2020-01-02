@@ -1,7 +1,6 @@
-import string
 from colorsys import rgb_to_hsv
-import random
 import time
+
 
 def id_generator():
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -21,12 +20,6 @@ def saturation(pixel):
     return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[1] / 255.0
 
 
-def random_width(clength):
-    x = random.random()
-    width = int(clength * (1 - x))
-    return width
-
-
 def crop_to(image_to_crop, reference_image):
     """
     Crops image to the size of a reference image. This function assumes that the relevant image is located in the center
@@ -43,4 +36,9 @@ def crop_to(image_to_crop, reference_image):
     upper = dy / 2
     right = dx / 2 + reference_size[0]
     lower = dy / 2 + reference_size[1]
-    return image_to_crop.crop(box=(int(left), int(upper), int(right), int(lower)))
+    return image_to_crop.crop(
+        box=(
+            int(left),
+            int(upper),
+            int(right),
+            int(lower)))

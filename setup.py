@@ -8,7 +8,7 @@ with open('requirements.txt') as fh:
 
 setuptools.setup(
     name="pixelsort",
-    version="1.0.0",
+    version="1.0.1",
     author="Bernard Zhao",
     author_email="bernardzhao@berkeley.edu",
     description="An image pixelsorter for Python.",
