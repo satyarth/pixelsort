@@ -1,15 +1,23 @@
 import random
 
 
-def sort_image(pixels, intervals, randomness, sorting_function):
+def sort_image(
+        size,
+        image_data,
+        mask_data,
+        intervals,
+        randomness,
+        sorting_function):
     sorted_pixels = []
-    for y in range(len(pixels)):
+
+    for y in range(size[1]):
         row = []
         x_min = 0
-        for x_max in intervals[y]:
+        for x_max in intervals[y] + [size[0]]:
             interval = []
             for x in range(x_min, x_max):
-                interval.append(pixels[y][x])
+                if mask_data[x, y]:
+                    interval.append(image_data[x, y])
             if random.random() < randomness / 100:
                 row += interval
             else:
