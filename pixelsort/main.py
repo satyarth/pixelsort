@@ -48,11 +48,8 @@ def pixelsort(
 
     mask_image = mask_image if mask_image else Image.new(
         "1", original.size, color=255)
-
-    mask_data = (mask_image
-                 .convert('1')
-                 .rotate(angle, expand=True, fillcolor=0)
-                 .load())
+    mask_image = mask_image.convert('1').rotate(angle, expand=True, fillcolor=0)
+    mask_data = mask_image.load()
 
     interval_image = (interval_image
                       .convert('1')
@@ -89,12 +86,13 @@ def pixelsort(
 def _place_pixels(pixels: PyAccess.PyAccess, mask: PyAccess.PyAccess, original: PyAccess.PyAccess,
                   size: typing.Tuple[int, int]):
     output_img = Image.new('RGBA', size)
+    outputdata = output_img.load()  # modifying pixelaccess modified original
     for y in range(size[1]):
         count = 0
         for x in range(size[0]):
             if not mask[x, y]:
-                output_img.putpixel((x, y), original[x, y])
+                outputdata[x, y] = original[x, y]
             else:
-                output_img.putpixel((x, y), pixels[y][count])
+                outputdata[x, y] = pixels[y][count]
                 count += 1
     return output_img
