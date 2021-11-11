@@ -1,5 +1,5 @@
-from colorsys import rgb_to_hsv
 import time
+from colorsys import rgb_to_hsv
 
 
 def id_generator():
