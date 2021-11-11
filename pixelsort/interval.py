@@ -15,7 +15,7 @@ def edge(image: Image.Image, lower_threshold: float, **_) -> typing.List[typing.
         intervals.append([])
         flag = True
         for x in range(image.size[0]):
-            if lightness(edge_data[x, y]) < lower_threshold:
+            if lightness(edge_data[x, y]) < lower_threshold * 255:
                 flag = True
             elif flag:
                 intervals[y].append(x)
@@ -32,7 +32,7 @@ def threshold(image: Image.Image, lower_threshold: float, upper_threshold: float
         intervals.append([])
         for x in range(image.size[0]):
             level = lightness(image_data[x, y])
-            if level < lower_threshold or level > upper_threshold:
+            if level < lower_threshold * 255 or level > upper_threshold * 255:
                 intervals[y].append(x)
     return intervals
 
@@ -99,7 +99,7 @@ def file_edges(image, interval_image, lower_threshold, **_) -> typing.List[typin
         intervals.append([])
         flag = True
         for x in range(image.size[0]):
-            if lightness(edge_data[x, y]) < lower_threshold:
+            if lightness(edge_data[x, y]) < lower_threshold * 255:
                 flag = True
             elif flag:
                 intervals[y].append(x)

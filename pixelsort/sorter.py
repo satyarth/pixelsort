@@ -11,7 +11,7 @@ def sort_image(
         mask_data: PyAccess.PyAccess,
         intervals: typing.List[typing.List[int]],
         randomness: float,
-        sorting_function: typing.Callable[[typing.Tuple[int, int, int]], float]):
+        sorting_function: typing.Callable[[typing.List[typing.Tuple[int, int, int]]], float]):
     sorted_pixels = []
 
     for y in range(size[1]):
@@ -22,7 +22,7 @@ def sort_image(
             for x in range(x_min, x_max):
                 if mask_data[x, y]:
                     interval.append(image_data[x, y])
-            if random.random() < randomness / 100:
+            if random.random() * 100 < randomness:
                 row += interval
             else:
                 row += sort_interval(interval, sorting_function)
@@ -31,5 +31,6 @@ def sort_image(
     return sorted_pixels
 
 
-def sort_interval(interval: typing.List, sorting_function: typing.Callable[[typing.Tuple[int, int, int]], float]):
+def sort_interval(interval: typing.List,
+                  sorting_function: typing.Callable[[typing.List[typing.Tuple[int, int, int]]], float]):
     return [] if interval == [] else sorted(interval, key=sorting_function)
