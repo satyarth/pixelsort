@@ -1,26 +1,26 @@
 import logging
+
 from PIL import Image
 
-from pixelsort.util import crop_to
-from pixelsort.sorter import sort_image
 from pixelsort.constants import DEFAULTS
 from pixelsort.interval import choices as interval_choices
+from pixelsort.sorter import sort_image
 from pixelsort.sorting import choices as sorting_choices
+from pixelsort.util import crop_to
 
 
 def pixelsort(
-    image,
-    mask_image=None,
-    interval_image=None,
-    randomness=DEFAULTS["randomness"],
-    clength=DEFAULTS["clength"],
-    sorting_function=DEFAULTS["sorting_function"],
-    interval_function=DEFAULTS["interval_function"],
-    lower_threshold=DEFAULTS["lower_threshold"],
-    upper_threshold=DEFAULTS["upper_threshold"],
-    angle=DEFAULTS["angle"]
+        image,
+        mask_image=None,
+        interval_image=None,
+        randomness=DEFAULTS["randomness"],
+        clength=DEFAULTS["clength"],
+        sorting_function=DEFAULTS["sorting_function"],
+        interval_function=DEFAULTS["interval_function"],
+        lower_threshold=DEFAULTS["lower_threshold"],
+        upper_threshold=DEFAULTS["upper_threshold"],
+        angle=DEFAULTS["angle"]
 ):
-
     original = image
     image = image.convert('RGBA').rotate(angle, expand=True)
     image_data = image.load()
