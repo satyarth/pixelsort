@@ -1,4 +1,5 @@
 import logging
+import typing
 
 from PIL import Image
 
@@ -10,17 +11,35 @@ from pixelsort.util import crop_to
 
 
 def pixelsort(
-        image,
-        mask_image=None,
-        interval_image=None,
-        randomness=DEFAULTS["randomness"],
-        clength=DEFAULTS["clength"],
-        sorting_function=DEFAULTS["sorting_function"],
-        interval_function=DEFAULTS["interval_function"],
-        lower_threshold=DEFAULTS["lower_threshold"],
-        upper_threshold=DEFAULTS["upper_threshold"],
-        angle=DEFAULTS["angle"]
-):
+        image: Image.Image,
+        mask_image: typing.Optional[Image.Image] = None,
+        interval_image: typing.Optional[Image.Image] = None,
+        randomness: float = DEFAULTS["randomness"],
+        char_length: float = DEFAULTS["clength"],
+        sorting_function: typing.Literal["lightness", "hue", "saturation", "intensity", "minimum"] = DEFAULTS[
+            "sorting_function"],
+        interval_function: typing.Literal["random", "threshold", "edges", "waves", "file", "file-edges", "none"] =
+        DEFAULTS["interval_function"],
+        lower_threshold: float = DEFAULTS["lower_threshold"],
+        upper_threshold: float = DEFAULTS["upper_threshold"],
+        angle: float = DEFAULTS["angle"]
+) -> Image.Image:
+    """
+    pixelsorts an image
+    :param image: image to pixelsort
+    :param mask_image: Image used for masking parts of the image.
+    :param interval_image: Image used to define intervals. Must be black and white.
+    :param randomness: What percentage of intervals *not* to sort. 0 by default.
+    :param char_length:	Characteristic length for the random width generator. Used in mode `random` and `waves`.
+    :param sorting_function: Sorting function to use for sorting the pixels.
+    :param interval_function: Controls how the intervals used for sorting are defined.
+    :param lower_threshold: How dark must a pixel be to be considered as a 'border' for sorting? Takes values from 0-1.
+        Used in edges and threshold modes.
+    :param upper_threshold: How bright must a pixel be to be considered as a 'border' for sorting? Takes values from
+        0-1. Used in threshold mode.
+    :param angle: Angle at which you're pixel sorting in degrees.
+    :return:
+    """
     original = image
     image = image.convert('RGBA').rotate(angle, expand=True)
     image_data = image.load()
@@ -41,7 +60,7 @@ def pixelsort(
         image,
         lower_threshold=lower_threshold,
         upper_threshold=upper_threshold,
-        clength=clength,
+        clength=char_length,
         interval_image=interval_image,
     )
     logging.debug("Sorting pixels...")
