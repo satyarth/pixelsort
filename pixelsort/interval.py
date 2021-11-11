@@ -1,9 +1,12 @@
 from random import randint, random as random_range
-from PIL import ImageFilter
+
+from PIL import ImageFilter, Image
+
 from pixelsort.util import lightness
 
 
-def edge(image, lower_threshold):
+def edge(image: Image.Image, lower_threshold: float):
+    """Performs an edge detection, which is used to define intervals. Tweak threshold with threshold."""
     edge_data = image.filter(ImageFilter.FIND_EDGES).convert('RGBA').load()
     intervals = []
 
@@ -19,7 +22,9 @@ def edge(image, lower_threshold):
     return intervals
 
 
-def threshold(image, lower_threshold, upper_threshold):
+def threshold(image: Image.Image, lower_threshold: float, upper_threshold: float):
+    """Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds
+     are sorted."""
     intervals = []
     image_data = image.load()
     for y in range(image.size[1]):
@@ -31,14 +36,16 @@ def threshold(image, lower_threshold, upper_threshold):
     return intervals
 
 
-def random(image, clength):
+def random(image, char_length):
+    """Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using
+    char_length."""
     intervals = []
 
     for y in range(image.size[1]):
         intervals.append([])
         x = 0
         while True:
-            x += int(clength * random_range())
+            x += int(char_length * random_range())
             if x > image.size[0]:
                 break
             else:
@@ -46,14 +53,15 @@ def random(image, clength):
     return intervals
 
 
-def waves(image, clength):
+def waves(image, char_length):
+    """Intervals are waves of nearly uniform widths. Control width of waves with char_length."""
     intervals = []
 
     for y in range(image.size[1]):
         intervals.append([])
         x = 0
         while True:
-            x += clength + randint(0, 10)
+            x += char_length + randint(0, 10)
             if x > image.size[0]:
                 break
             else:
@@ -62,6 +70,8 @@ def waves(image, clength):
 
 
 def file_mask(image, interval_image):
+    """Intervals taken from another specified input image. Must be black and white, and the same size as the input
+    image."""
     intervals = []
     data = interval_image.load()
 
@@ -78,6 +88,8 @@ def file_mask(image, interval_image):
 
 
 def file_edges(image, interval_image, lower_threshold):
+    """Intervals defined by performing edge detection on the file specified by -f. Must be the same size as the input
+    image."""
     edge_data = interval_image.filter(
         ImageFilter.FIND_EDGES).convert('RGBA').load()
     intervals = []
@@ -95,6 +107,7 @@ def file_edges(image, interval_image, lower_threshold):
 
 
 def none(image):
+    """Sort whole rows, only stopping at image borders."""
     intervals = []
     for y in range(image.size[1]):
         intervals.append([])

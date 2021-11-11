@@ -33,9 +33,9 @@ def parse_args():
         help="Pixels brighter than this are not sorted, between 0 and 1")
     parser.add_argument(
         "-c",
-        "--clength",
+        "--char_length",
         type=int,
-        default=DEFAULTS["clength"],
+        default=DEFAULTS["char_length"],
         help="Characteristic length of random intervals")
     parser.add_argument(
         "-a",
@@ -81,7 +81,7 @@ def parse_args():
         "interval_file_path": _args.int_file,
         "lower_threshold": _args.threshold,
         "upper_threshold": _args.upper_threshold,
-        "clength": _args.clength,
+        "char_length": _args.char_length,
         "angle": _args.angle,
         "randomness": _args.randomness,
         "sorting_function": _args.sorting_function,
