@@ -15,7 +15,7 @@ def pixelsort(
         mask_image: typing.Optional[Image.Image] = None,
         interval_image: typing.Optional[Image.Image] = None,
         randomness: float = DEFAULTS["randomness"],
-        char_length: float = DEFAULTS["clength"],
+        char_length: float = DEFAULTS["char_length"],
         sorting_function: typing.Literal["lightness", "hue", "saturation", "intensity", "minimum"] = DEFAULTS[
             "sorting_function"],
         interval_function: typing.Literal["random", "threshold", "edges", "waves", "file", "file-edges", "none"] =
@@ -38,7 +38,7 @@ def pixelsort(
     :param upper_threshold: How bright must a pixel be to be considered as a 'border' for sorting? Takes values from
         0-1. Used in threshold mode.
     :param angle: Angle at which you're pixel sorting in degrees.
-    :return:
+    :return: pixelsorted image
     """
     original = image
     image = image.convert('RGBA').rotate(angle, expand=True)
@@ -60,7 +60,7 @@ def pixelsort(
         image,
         lower_threshold=lower_threshold,
         upper_threshold=upper_threshold,
-        clength=char_length,
+        char_length=char_length,
         interval_image=interval_image,
     )
     logging.debug("Sorting pixels...")

@@ -56,10 +56,10 @@ Logging level           | `-l`  | Level of logging statements made visible. Choi
 
 Interval function | Description
 ------------------|------------
-`random`			    | Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `clength`.
+`random`			    | Randomly generate intervals. Distribution of widths is linear by default. Interval widths can be scaled using `char_length`.
 `edges`				    | Performs an edge detection, which is used to define intervals. Tweak threshold with `threshold`.
 `threshold`		  	| Intervals defined by lightness thresholds; only pixels with a lightness between the upper and lower thresholds are sorted.
-`waves`			    	| Intervals are waves of nearly uniform widths. Control width of waves with `clength`.
+`waves`			    	| Intervals are waves of nearly uniform widths. Control width of waves with `char_length`.
 `file`			    	| Intervals taken from another specified input image. Must be black and white, and the same size as the input image.
 `file-edges`	  	| Intevals defined by performing edge detection on the file specified by `-f`. Must be the same size as the input image.
 `none`			    	| Sort whole rows, only stopping at image borders.
