@@ -1,26 +1,14 @@
 import time
-from colorsys import rgb_to_hsv
+
+from PIL import Image
 
 
-def id_generator():
+def id_generator() -> str:
     timestr = time.strftime("%Y%m%d-%H%M%S")
     return timestr
 
 
-def lightness(pixel):
-    # For backwards compatibility with python2
-    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[2] / 255.0
-
-
-def hue(pixel):
-    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[0] / 255.0
-
-
-def saturation(pixel):
-    return rgb_to_hsv(pixel[0], pixel[1], pixel[2])[1] / 255.0
-
-
-def crop_to(image_to_crop, reference_image):
+def crop_to(image_to_crop: Image.Image, reference_image: Image.Image) -> Image.Image:
     """
     Crops image to the size of a reference image. This function assumes that the relevant image is located in the center
     and you want to crop away equal sizes on both the left and right as well on both the top and bottom.
