@@ -2,6 +2,8 @@ import logging
 import typing
 
 from PIL import Image
+# python implementation of the PixelAccess class returned by im.load(), has the same functions so is fine for type hints
+from PIL import PyAccess
 
 from pixelsort.constants import DEFAULTS
 from pixelsort.interval import choices as interval_choices
@@ -84,7 +86,8 @@ def pixelsort(
     return output_img
 
 
-def _place_pixels(pixels, mask, original, size):
+def _place_pixels(pixels: PyAccess.PyAccess, mask: PyAccess.PyAccess, original: PyAccess.PyAccess,
+                  size: typing.Tuple[int, int]):
     output_img = Image.new('RGBA', size)
     for y in range(size[1]):
         count = 0

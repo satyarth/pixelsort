@@ -1,13 +1,17 @@
 import random
+import typing
+
+# python implementation of the PixelAccess class returned by im.load(), has the same functions so is fine for type hints
+from PIL import PyAccess
 
 
 def sort_image(
-        size,
-        image_data,
-        mask_data,
-        intervals,
-        randomness,
-        sorting_function):
+        size: typing.Tuple[int, int],
+        image_data: PyAccess.PyAccess,
+        mask_data: PyAccess.PyAccess,
+        intervals: typing.List[typing.List[int]],
+        randomness: float,
+        sorting_function: typing.Callable[[typing.Tuple[int, int, int]], float]):
     sorted_pixels = []
 
     for y in range(size[1]):
@@ -27,5 +31,5 @@ def sort_image(
     return sorted_pixels
 
 
-def sort_interval(interval, sorting_function):
+def sort_interval(interval: typing.List, sorting_function: typing.Callable[[typing.Tuple[int, int, int]], float]):
     return [] if interval == [] else sorted(interval, key=sorting_function)
