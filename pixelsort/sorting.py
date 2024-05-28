@@ -43,15 +43,16 @@ def saturation(pixel: typing.Tuple[int, int, int]) -> float:
     r, g, b = pixel[:3]
     maxc = max(r, g, b)
     minc = min(r, g, b)
-    sumc = minc+maxc
-    diffc = maxc-minc
-    l = sumc / 2.0
-    if minc == maxc or sumc == 0 or 2.0-diffc == 0
+    sumc = minc + maxc
+    diffc = maxc - minc
+    sdiv = 2.0 - diffc
+
+    if minc == maxc or sumc == 0 or sdiv == 0:
         return 0.0
-    if l <= 0.5:
+    if sumc / 2.0 <= 0.5:
         s = diffc / sumc
     else:
-        s = diffc / (2.0 - diffc)
+        s = diffc / sdiv
     return s
 
 
