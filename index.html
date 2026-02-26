@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Flux</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body class="p-4 h-screen overflow-hidden flex flex-col">
+
+<div class="flex justify-between items-center mb-4 bg-gray-900 p-2 rounded">
+    <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold text-green-400">Pixel Flux</h1>
+        <div id="status" class="text-xs px-2 py-1 bg-blue-900 rounded text-blue-200">Initializing...</div>
+    </div>
+    <button onclick="resetAll()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded text-sm font-bold">RESET ALL</button>
+</div>
+
+<div class="flex-grow grid grid-cols-12 gap-6 overflow-hidden">
+    
+    <div class="col-span-4 h-full overflow-y-auto pr-2 pb-20">
+        
+        <div class="control-group bg-gray-900">
+            <label class="block mb-2 font-bold text-green-400">1. Input Image/GIF</label>
+            <input type="file" id="fileInput" accept="image/*" class="w-full text-sm">
+        </div>
+
+        <div class="control-group bg-gray-900">
+            <label class="block mb-2 font-bold text-green-400">2. Mask (Optional)</label>
+            <input type="file" id="maskInput" accept="image/*" class="w-full text-sm mb-2">
+            <label class="flex items-center gap-2 text-sm">
+                <input type="checkbox" id="invertMask"> Invert Mask
+            </label>
+        </div>
+
+        <div class="control-group bg-gray-900 style="border: 1px solid #1e40af;">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-bold">Animation Settings</span>
+                <button onclick="resetGifControls()" class="text-xs bg-blue-800 px-2 py-1 rounded">Default</button>
+            </div>
+            
+            <div style="text-align: center; background: rgba(30, 58, 138, 0.4); padding: 8px; border-radius: 4px; margin-bottom: 8px; border: 1px solid #1d4ed8;">
+                <span style="font-size: 10px; color: #93c5fd; text-transform: uppercase;">Total GIF Duration Estimate</span>
+                <div id="durationDisplay" style="font-size: 1.25rem; font-weight: bold; color: white;">1.50s</div>
+            </div>
+
+            <div class="text-xs text-gray-400 mb-2 italic">Inactive unless Start and End values differ for sorting parameters.</div>
+
+            <div class="slider-row">
+                <span class="w-16 text-xs">Frames:</span>
+                <input type="range" id="frameCount" min="1" max="100" value="15">
+                <input type="number" id="frameCountVal" value="15">
+            </div>
+            <div class="slider-row mb-2">
+                <span class="w-16 text-xs">FPS:</span>
+                <input type="range" id="fps" min="1" max="30" value="10">
+                <input type="number" id="fpsVal" value="10">
+            </div>
+            <label class="flex items-center gap-2 text-xs text-blue-200 mt-2 border-t border-blue-800/30 pt-2">
+                <input type="checkbox" id="useSourceFps" checked> Keep Original GIF Speed
+            </label>
+        </div>
+
+        <div class="control-group">
+            <label class="block text-sm font-bold mb-1">Sorting Function</label>
+            <select id="sortFunc">
+                <option value="lightness">Lightness</option>
+                <option value="hue">Hue</option>
+                <option value="saturation">Saturation</option>
+                <option value="intensity">Intensity</option>
+                <option value="minimum">Minimum</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label class="block text-sm font-bold mb-1">Interval Function</label>
+            <select id="intervalFunc">
+                <option value="threshold">Threshold</option>
+                <option value="edges">Edges</option>
+                <option value="random">Random</option>
+                <option value="waves">Waves</option>
+                <option value="none">None (Whole Row/Col)</option> 
+            </select>
+        </div>
+
+        <div class="control-group">
+            <span class="text-sm font-bold">Angle (Degrees)</span>
+	    <div class="text-xs text-gray-500 mb-2 italic">Angle of pixel sorting in degrees.</div>
+            <button class="sync-btn" onclick="syncValues('angle')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="angleStart" min="0" max="360" value="0"><input type="number" id="angleStartVal" value="0"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="angleEnd" min="0" max="360" value="0"><input type="number" id="angleEndVal" value="0"></div>
+        </div>
+
+        <div class="control-group">
+            <div class="flex items-center mb-1">
+                <span class="text-sm font-bold">Threshold (Lower)</span>
+                <div class="tooltip-wrapper relative">
+                    <span class="info-icon">i</span>
+                    <div class="tooltip-content">How dark must a pixel be to be considered as a 'border' for sorting? Default 0.25. Used in edges and threshold modes.</div>
+                </div>
+            </div>
+            <div class="text-xs text-gray-500 mb-2 italic">Used in edges and threshold intervals.</div>
+            
+            <button class="sync-btn" onclick="syncValues('thresh')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="threshStart" min="0" max="1" step="0.01" value="0.25"><input type="number" id="threshStartVal" value="0.25"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="threshEnd" min="0" max="1" step="0.01" value="0.25"><input type="number" id="threshEndVal" value="0.25"></div>
+        </div>
+
+        <div class="control-group">
+            <div class="flex items-center mb-1">
+                <span class="text-sm font-bold">Threshold (Upper)</span>
+                <div class="tooltip-wrapper relative">
+                    <span class="info-icon">i</span>
+                    <div class="tooltip-content">How bright must a pixel be to be considered as a 'border' for sorting? Default 0.8. Used in threshold mode.</div>
+                </div>
+            </div>
+            <div class="text-xs text-gray-500 mb-2 italic">Used in threshold interval</div>
+
+            <button class="sync-btn" onclick="syncValues('threshUpper')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="threshUpperStart" min="0" max="1" step="0.01" value="0.8"><input type="number" id="threshUpperStartVal" value="0.8"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="threshUpperEnd" min="0" max="1" step="0.01" value="0.8"><input type="number" id="threshUpperEndVal" value="0.8"></div>
+        </div>
+
+        <div class="control-group">
+            <span class="text-sm font-bold">Randomness (%)</span>
+	    <div class="text-xs text-gray-500 mb-2 italic">What percentage of intervals not to sort.</div>
+            <button class="sync-btn" onclick="syncValues('rand')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="randStart" min="0" max="100" value="0"><input type="number" id="randStartVal" value="0"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="randEnd" min="0" max="100" value="0"><input type="number" id="randEndVal" value="0"></div>
+        </div>
+
+        <div class="control-group">
+            <div class="flex items-center mb-1">
+                <span class="text-sm font-bold">Characteristic Length</span>
+                <div class="tooltip-wrapper relative">
+                    <span class="info-icon">i</span>
+                    <div class="tooltip-content">Characteristic length for the random width generator. Used in mode random and waves.</div>
+                </div>
+            </div>
+            <div class="text-xs text-gray-500 mb-2 italic">Used in random and waves interval</div>
+
+            <button class="sync-btn" onclick="syncValues('char')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="charStart" min="0" max="500" value="50"><input type="number" id="charStartVal" value="50"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="charEnd" min="0" max="500" value="50"><input type="number" id="charEndVal" value="50"></div>
+        </div>
+
+        <div class="control-group">
+            <span class="text-sm font-bold">Blur (Radius)</span>
+	    <div class="text-xs text-gray-500 mb-2 italic">Source image blur.</div>
+            <button class="sync-btn" onclick="syncValues('blur')" title="Sync Start to End">=</button>
+            <div class="slider-row"><span>Start:</span><input type="range" id="blurStart" min="0" max="50" value="0"><input type="number" id="blurStartVal" value="0"></div>
+            <div class="slider-row"><span>End:</span><input type="range" id="blurEnd" min="0" max="50" value="0"><input type="number" id="blurEndVal" value="0"></div>
+        </div>
+
+
+
+        <button id="processBtn" class="w-full bg-green-600 text-white font-bold py-4 rounded disabled:opacity-50 mb-10" disabled>PROCESS</button>
+    </div>
+
+<div class="col-span-8 flex flex-col items-center justify-center bg-black rounded p-4 relative h-full border border-gray-800">
+    <div id="loader" class="hidden absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center" style="z-index: 50;">
+        <div class="text-green-400 text-2xl animate-pulse">PROCESSING...</div>
+        <div id="progressText" class="text-gray-400 mt-2 text-sm">Initializing...</div>
+    </div>
+    
+    <img id="outputImage" class="hidden max-h-full max-w-full shadow-lg object-contain">
+    
+    <a id="downloadBtn" class="hidden bg-blue-600 px-8 py-3 rounded-full text-white font-bold shadow-lg mt-4">
+        Download Result
+    </a>
+    
+    <div id="placeholder" class="text-gray-600">Upload an image to begin.</div>
+</div>
+</div>
+
+<script>
+    let pyodide = null;
+
+    // --- Sync Input and Range ---
+    function sync(id, valId) {
+        const el = document.getElementById(id);
+        const val = document.getElementById(valId);
+        if(!el || !val) return;
+        el.addEventListener('input', () => { val.value = el.value; updateDurationDisplay(); });
+        val.addEventListener('change', () => { el.value = val.value; updateDurationDisplay(); });
+    }
+
+    const sliderPairs = [
+        ['angleStart', 'angleStartVal'], ['angleEnd', 'angleEndVal'],
+        ['threshStart', 'threshStartVal'], ['threshEnd', 'threshEndVal'],
+        ['threshUpperStart', 'threshUpperStartVal'], ['threshUpperEnd', 'threshUpperEndVal'],
+        ['randStart', 'randStartVal'], ['randEnd', 'randEndVal'],
+        ['charStart', 'charStartVal'], ['charEnd', 'charEndVal'],
+        ['blurStart', 'blurStartVal'], ['blurEnd', 'blurEndVal'],
+        ['frameCount', 'frameCountVal'], ['fps', 'fpsVal']
+    ];
+    sliderPairs.forEach(pair => sync(pair[0], pair[1]));
+
+    // --- Live Duration Logic ---
+    function updateDurationDisplay() {
+        const frames = parseFloat(document.getElementById('frameCount').value);
+        const fps = parseFloat(document.getElementById('fps').value);
+        const display = document.getElementById('durationDisplay');
+        if (fps > 0) {
+            const dur = (frames / fps).toFixed(2);
+            display.innerText = dur + "s";
+            display.style.color = dur > 5 ? "#fb923c" : "white";
+        }
+    }
+
+    function syncValues(prefix) {
+        const startVal = document.getElementById(prefix + 'Start').value;
+        const endEl = document.getElementById(prefix + 'End');
+        const endValEl = document.getElementById(prefix + 'EndVal');
+        if(endEl) { endEl.value = startVal; endValEl.value = startVal; }
+    }
+
+    function resetGifControls() {
+        document.getElementById('frameCount').value = 15;
+        document.getElementById('frameCountVal').value = 15;
+        document.getElementById('fps').value = 10;
+        document.getElementById('fpsVal').value = 10;
+        document.getElementById('useSourceFps').checked = true;
+        updateDurationDisplay();
+    }
+
+    function resetAll() { location.reload(); }
+
+    // --- Pyodide Initialization ---
+    async function init() {
+        const status = document.getElementById('status');
+        try {
+            status.innerText = "Loading Engine...";
+            pyodide = await loadPyodide();
+            await pyodide.loadPackage(["micropip", "numpy", "Pillow"]);
+            
+            const repoBase = "https://raw.githubusercontent.com/satyarth/pixelsort/master/pixelsort/";
+            const files = ["__init__.py", "constants.py", "interval.py", "main.py", "sorter.py", "sorting.py", "util.py"];
+            if (!pyodide.FS.analyzePath("/home/pyodide/pixelsort").exists) {
+                pyodide.FS.mkdir('/home/pyodide/pixelsort');
+            }
+            for (const file of files) {
+                const code = await (await fetch(repoBase + file)).text();
+                pyodide.FS.writeFile(`/home/pyodide/pixelsort/${file}`, code);
+            }
+
+            const workerCode = await (await fetch('worker.py')).text();
+            pyodide.runPython(workerCode);
+
+            status.innerText = "Ready";
+            document.getElementById('processBtn').disabled = false;
+        } catch (e) { console.error(e); }
+    }
+    init();
+
+    // --- Progress Update Callback ---
+    function updateProgress(current, total) {
+        document.getElementById('progressText').innerText = `Frame ${current} of ${total}...`;
+    }
+
+    // --- Run Process ---
+    document.getElementById('processBtn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('fileInput');
+        if (!fileInput.files.length) return alert("Select a file.");
+        const loader = document.getElementById('loader');
+        loader.classList.remove('hidden');
+
+        const file = fileInput.files[0];
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        pyodide.FS.writeFile("input_image", bytes);
+
+        let maskBytes = null;
+        if (document.getElementById('maskInput').files.length) {
+            maskBytes = new Uint8Array(await document.getElementById('maskInput').files[0].arrayBuffer());
+            pyodide.FS.writeFile("input_mask", maskBytes);
+        }
+
+        const params = {
+            angle_start: parseFloat(document.getElementById('angleStart').value),
+            angle_end: parseFloat(document.getElementById('angleEnd').value),
+            thresh_lower_start: parseFloat(document.getElementById('threshStart').value),
+            thresh_lower_end: parseFloat(document.getElementById('threshEnd').value),
+            thresh_upper_start: parseFloat(document.getElementById('threshUpperStart').value),
+            thresh_upper_end: parseFloat(document.getElementById('threshUpperEnd').value),
+            rand_start: parseFloat(document.getElementById('randStart').value),
+            rand_end: parseFloat(document.getElementById('randEnd').value),
+            char_start: parseFloat(document.getElementById('charStart').value),
+            char_end: parseFloat(document.getElementById('charEnd').value),
+            blur_start: parseFloat(document.getElementById('blurStart').value),
+            blur_end: parseFloat(document.getElementById('blurEnd').value),
+            frame_count: parseInt(document.getElementById('frameCount').value),
+            fps: parseInt(document.getElementById('fps').value),
+            use_source_fps: document.getElementById('useSourceFps').checked,
+            sort_func: document.getElementById('sortFunc').value,
+            interval_func: document.getElementById('intervalFunc').value,
+            invert_mask: document.getElementById('invertMask').checked
+        };
+
+        try {
+            const process_image = pyodide.globals.get('process_image');
+            const result = await process_image("input_image", maskBytes ? "input_mask" : null, JSON.stringify(params), updateProgress);
+            const blob = new Blob([result.toJs()], { type: 'image/gif' });
+            const url = URL.createObjectURL(blob);
+            document.getElementById('outputImage').src = url;
+            document.getElementById('outputImage').classList.remove('hidden');
+            document.getElementById('downloadBtn').href = url;
+            document.getElementById('downloadBtn').classList.remove('hidden');
+            document.getElementById('placeholder').classList.add('hidden');
+        } catch (e) { alert(e); } finally { loader.classList.add('hidden'); }
+    });
+</script>
+</body>
+</html>
