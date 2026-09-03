@@ -3,6 +3,7 @@
 
 #VirtualEnv
 venv
+.python-version
 
 #PyCharm
 .idea
@@ -10,5 +11,7 @@ venv
 #VSCode
 .vscode
 
-#Output images in root (examples are not ignored)
+#Input and output images (examples are not ignored)
 /*.png
+out/
+in/

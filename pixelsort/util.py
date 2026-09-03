@@ -24,9 +24,4 @@ def crop_to(image_to_crop: Image.Image, reference_image: Image.Image) -> Image.I
     upper = dy / 2
     right = dx / 2 + reference_size[0]
     lower = dy / 2 + reference_size[1]
-    return image_to_crop.crop(
-        box=(
-            int(left),
-            int(upper),
-            int(right),
-            int(lower)))
+    return image_to_crop.crop(box=(int(left), int(upper), int(right), int(lower)))

@@ -3,12 +3,12 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open('requirements.txt') as fh:
+with open("requirements.txt") as fh:
     requirements = fh.read().splitlines()
 
 setuptools.setup(
     name="pixelsort",
-    version="1.0.1",
+    version="1.1.0",
     author="Bernard Zhao",
     author_email="bernardzhao@berkeley.edu",
     description="An image pixelsorter for Python.",
@@ -21,5 +21,5 @@ setuptools.setup(
         "Programming Language :: Python",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ]
+    ],
 )

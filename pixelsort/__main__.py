@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 import logging
 from pixelsort.argparams import parse_args
@@ -11,7 +12,10 @@ interval_file_path = args.pop("interval_file_path")
 mask_path = args.pop("mask_path")
 
 if image_output_path is None:
-    image_output_path = id_generator() + ".png"
+    if not os.path.exists("out/"):
+        os.mkdir("out/")
+    extension = os.path.splitext(image_input_path)[1] or ".png"
+    image_output_path = f"out/{id_generator()}{extension}"
     logging.warning("No output path provided, using " + image_output_path)
 
 logging.debug("Opening image...")
@@ -23,5 +27,9 @@ if interval_file_path:
     logging.debug("Opening interval file...")
     args["interval_image"] = Image.open(interval_file_path)
 
+image = pixelsort(**args)
 logging.debug("Saving image...")
-pixelsort(**args).save(image_output_path)
+if os.path.splitext(image_output_path)[1].lower() in (".jpg", ".jpeg"):
+    # JPEG has no alpha channel
+    image = image.convert("RGB")
+image.save(image_output_path)

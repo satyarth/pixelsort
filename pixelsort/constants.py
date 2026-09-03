@@ -6,4 +6,5 @@ DEFAULTS = {
     "angle": 0,
     "randomness": 0,
     "sorting_function": "lightness",
+    "super_pixel_size": 1,
 }
